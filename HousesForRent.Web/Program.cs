@@ -1,3 +1,4 @@
+using HousesForRent.Application.Common.Interfaces;
 using HousesForRent.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +9,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<ApplicationDbContext>(option =>
 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+builder.Services.AddScoped<IHouseRepository, IHouseRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
