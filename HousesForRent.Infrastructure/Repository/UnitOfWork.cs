@@ -13,7 +13,7 @@ namespace HousesForRent.Infrastructure.Repository
         private readonly ApplicationDbContext _db;
         public IHouseRepository House {get; private set;}
         public UnitOfWork(ApplicationDbContext db)
-        {
+    {
             _db = db;
             House = new HouseRepository(_db);
         }
