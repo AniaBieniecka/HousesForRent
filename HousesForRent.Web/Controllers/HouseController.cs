@@ -26,15 +26,40 @@ namespace HousesForRent.Web.Controllers
         [HttpPost]
         public IActionResult Create(House house)
         {
-            if(house.Price < house.DiscountPrice)
+            if (house.Price < house.DiscountPrice)
             {
                 ModelState.AddModelError("DiscountPrice", "The discount price cannot be higer than standard price");
             }
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-            _unitOfWork.House.Add(house);
-            _unitOfWork.House.Save();
-            return RedirectToAction("Index");
+                _unitOfWork.House.Add(house);
+                _unitOfWork.House.Save();
+                return RedirectToAction("Index");
+            }
+            else return View(house);
+        }
+
+        public IActionResult Update(int id)
+        {
+            var house = _unitOfWork.House.Get(u => u.Id == id);
+            if (house != null)
+            {
+                return View(house);
+            }
+            else return NotFound();
+        }
+        [HttpPost]
+        public IActionResult Update(House house)
+        {
+            if (house.Price < house.DiscountPrice)
+            {
+                ModelState.AddModelError("DiscountPrice", "The discount price cannot be higer than standard price");
+            }
+            if (ModelState.IsValid)
+            {
+                _unitOfWork.House.Update(house);
+                _unitOfWork.House.Save();
+                return RedirectToAction("Index");
             }
             else return View(house);
         }
