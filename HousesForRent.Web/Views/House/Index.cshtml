@@ -1,0 +1,35 @@
+﻿@model List<House>
+
+
+<h2 class="text-center p-3">House list</h2>
+<div class="pb-2">
+    <a asp-controller="House" asp-action="Create" class="btn btn-primary">Create new house</a>
+</div>
+<table class="table table-bordered table-hover table-dark">
+    <thead class="bg-primary data-bs-theme=" dark"">
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Area</th>
+            <th>Occupancy</th>
+            <th>Location</th>
+            <th></th>
+        </tr>
+    </thead>
+
+<tbody class="table-light">
+    @foreach (var house in Model)
+    {
+        <tr>
+            <td>@house.Name</td>
+            <td>@house.Price</td>
+            <td>@house.Area</td>
+            <td>@house.Occupancy</td>
+            <td>@house.Location</td>
+            <td></td>
+        </tr>
+    }
+
+</tbody>
+</table>
+
