@@ -34,6 +34,8 @@ namespace HousesForRent.Web.Controllers
             {
                 _unitOfWork.House.Add(house);
                 _unitOfWork.House.Save();
+                TempData["success"] = "The house was created successfully";
+
                 return RedirectToAction("Index");
             }
             else return View(house);
@@ -42,7 +44,7 @@ namespace HousesForRent.Web.Controllers
         public IActionResult Update(int id)
         {
             var house = _unitOfWork.House.Get(u => u.Id == id);
-            if (house != null)
+            if (house is not null)
             {
                 return View(house);
             }
@@ -59,9 +61,40 @@ namespace HousesForRent.Web.Controllers
             {
                 _unitOfWork.House.Update(house);
                 _unitOfWork.House.Save();
+                TempData["success"] = "The house was updated successfully";
+                return RedirectToAction("Index");
+
+            }
+            else
+                TempData["error"] = "The house wasn't deleted successfully";
+
+            return View(house);
+        }
+
+        public IActionResult Delete(int id)
+        {
+            var house = _unitOfWork.House.Get(u => u.Id == id);
+            if (house is not null)
+            {
+                return View(house);
+            }
+            else return NotFound();
+        }
+        [HttpPost]
+        public IActionResult Delete(House obj)
+        {
+            House? house = _unitOfWork.House.Get(u => u.Id == obj.Id);
+
+            if (house is not null)
+            {
+                _unitOfWork.House.Remove(house);
+                _unitOfWork.House.Save();
+                TempData["success"] = "The house was deleted successfully";
                 return RedirectToAction("Index");
             }
-            else return View(house);
+            else
+                TempData["error"] = "The house wasn't deleted successfully";
+            return View();
         }
     }
 }
