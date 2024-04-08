@@ -7,10 +7,12 @@ namespace HousesForRent.Web.Controllers
     public class HouseController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _webHostEnviroment;
 
-        public HouseController(IUnitOfWork unitOfWork)
+        public HouseController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnviroment)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnviroment = webHostEnviroment;
         }
         public IActionResult Index()
         {
@@ -32,6 +34,16 @@ namespace HousesForRent.Web.Controllers
             }
             if (ModelState.IsValid)
             {
+                if(house.Image != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(house.Image.FileName);
+                    string imagePath = Path.Combine(_webHostEnviroment.WebRootPath, @"images\House");
+
+                    using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
+                        house.Image.CopyTo(fileStream);
+
+                    house.ImageUrl = @"\images\House\" + fileName;
+                }
                 _unitOfWork.House.Add(house);
                 _unitOfWork.House.Save();
                 TempData["success"] = "The house was created successfully";
@@ -59,6 +71,26 @@ namespace HousesForRent.Web.Controllers
             }
             if (ModelState.IsValid)
             {
+                if (house.Image != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(house.Image.FileName);
+                    string imagePath = Path.Combine(_webHostEnviroment.WebRootPath, @"images\House");
+
+                    if (!string.IsNullOrEmpty(house.ImageUrl))
+                    {
+                        var oldImagePath = Path.Combine(_webHostEnviroment.WebRootPath, house.ImageUrl.TrimStart('\\'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
+                    using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
+                        house.Image.CopyTo(fileStream);
+
+                    house.ImageUrl = @"\images\House\" + fileName;
+                }
+
                 _unitOfWork.House.Update(house);
                 _unitOfWork.House.Save();
                 TempData["success"] = "The house was updated successfully";
@@ -87,6 +119,14 @@ namespace HousesForRent.Web.Controllers
 
             if (house is not null)
             {
+                if (!string.IsNullOrEmpty(house.ImageUrl))
+                {
+                    var oldImagePath = Path.Combine(_webHostEnviroment.WebRootPath, house.ImageUrl.TrimStart('\\'));
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
                 _unitOfWork.House.Remove(house);
                 _unitOfWork.House.Save();
                 TempData["success"] = "The house was deleted successfully";
