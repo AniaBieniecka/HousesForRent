@@ -12,5 +12,7 @@ namespace HousesForRent.Infrastructure.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<House> Houses { get; set; }
+        public DbSet<Amenity> Amenities { get; set; }
+        public DbSet<HouseAmenity> HouseAmenities { get; set; }
     }
 }
