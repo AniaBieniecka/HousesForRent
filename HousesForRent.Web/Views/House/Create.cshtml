@@ -5,7 +5,7 @@
         <div class="card bg-light p-2">
             <h2 class="text-center p-3">Create house</h2>
             <div class="p-2">
-                <form method="post" class="row">
+                <form method="post" class="row" enctype="multipart/form-data">
                     <div class="row p3">
                         <div class="form-floating py-2 col-12 col-md-6">
                             <input asp-for="Name" class="form-control border shadow" />
@@ -55,6 +55,14 @@
                             <input asp-for="DiscountPrice" class="form-control border shadow" />
                             <label asp-for="DiscountPrice" class="m-2"></label>
                             <span asp-validation-for="DiscountPrice" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center p3">
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="ImageUrl" hidden class="form-control border shadow" />
+                            <input asp-for="Image" class="form-control border shadow" />
+                            <label asp-for="ImageUrl" class="m-2"></label>
+                            <span asp-validation-for="ImageUrl" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="row justify-content-md-center p3">
