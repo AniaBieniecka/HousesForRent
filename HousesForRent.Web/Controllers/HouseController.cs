@@ -161,16 +161,25 @@ namespace HousesForRent.Web.Controllers
         public IActionResult Delete(int id)
         {
             var house = _unitOfWork.House.Get(u => u.Id == id);
+
+            HouseVM vm = new()
+            {
+                House = house,
+                AmenityList = _unitOfWork.Amenity.GetAll().ToList(),
+                HouseAmenitiesIdList = _unitOfWork.HouseAmenity.GetAll(u => u.HouseId == id).Select(u => u.AmenityId).ToList()
+
+            };
+
             if (house is not null)
             {
-                return View(house);
+                return View(vm);
             }
             else return NotFound();
         }
         [HttpPost]
-        public IActionResult Delete(House obj)
+        public IActionResult Delete(HouseVM vm)
         {
-            House? house = _unitOfWork.House.Get(u => u.Id == obj.Id);
+            House? house = _unitOfWork.House.Get(u => u.Id == vm.House.Id);
 
             if (house is not null)
             {
