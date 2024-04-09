@@ -1,10 +1,4 @@
 ﻿@model HouseVM
-<style>
-    /* Ustawienie wysokości pola tekstowego */
-    .custom-textarea {
-        height: 500px; /* Dostosuj wysokość według preferencji */
-    }
-</style>
 
 <div class="row justify-content-md-center">
     <div class="col-lg-9">
@@ -79,7 +73,7 @@
                                 <span asp-validation-for="@Model.House.Description" class="text-danger"></span>
                             </div>
                         </div>
-                        @if (Model.AmenityList is not null)
+                        @if (Model.AmenityList.Count !=0)
                         {
                             <div class="form-floating py-2 col-12 col-md-6">
                                 Choose amenities from the list:

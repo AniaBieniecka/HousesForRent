@@ -2,6 +2,8 @@
 using HousesForRent.Domain.Entities;
 using HousesForRent.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace HousesForRent.Web.Controllers
@@ -56,10 +58,10 @@ namespace HousesForRent.Web.Controllers
 
                 if (amenityId is not null)
                 {
-                    foreach(var id in amenityId)
+                    foreach (var id in amenityId)
                     {
                         HouseAmenity houseAmenity = new HouseAmenity();
-                        houseAmenity.HouseId =house.Id;
+                        houseAmenity.HouseId = house.Id;
                         houseAmenity.AmenityId = id;
                         _unitOfWork.HouseAmenity.Add(houseAmenity);
                         _unitOfWork.House.Save();
@@ -75,29 +77,38 @@ namespace HousesForRent.Web.Controllers
         public IActionResult Update(int id)
         {
             var house = _unitOfWork.House.Get(u => u.Id == id);
+
+            HouseVM vm = new()
+            {
+                House = house,
+                AmenityList = _unitOfWork.Amenity.GetAll().ToList(),
+                HouseAmenitiesIdList = _unitOfWork.HouseAmenity.GetAll(u => u.HouseId == id).Select(u => u.AmenityId).ToList()
+
+            };
+
             if (house is not null)
             {
-                return View(house);
+                return View(vm);
             }
             else return NotFound();
         }
         [HttpPost]
-        public IActionResult Update(House house)
+        public IActionResult Update(HouseVM houseVM, int[] amenityId)
         {
-            if (house.Price < house.DiscountPrice)
+            if (houseVM.House.Price < houseVM.House.DiscountPrice)
             {
                 ModelState.AddModelError("DiscountPrice", "The discount price cannot be higer than standard price");
             }
             if (ModelState.IsValid)
             {
-                if (house.Image != null)
+                if (houseVM.House.Image != null)
                 {
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(house.Image.FileName);
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(houseVM.House.Image.FileName);
                     string imagePath = Path.Combine(_webHostEnviroment.WebRootPath, @"images\House");
 
-                    if (!string.IsNullOrEmpty(house.ImageUrl))
+                    if (!string.IsNullOrEmpty(houseVM.House.ImageUrl))
                     {
-                        var oldImagePath = Path.Combine(_webHostEnviroment.WebRootPath, house.ImageUrl.TrimStart('\\'));
+                        var oldImagePath = Path.Combine(_webHostEnviroment.WebRootPath, houseVM.House.ImageUrl.TrimStart('\\'));
                         if (System.IO.File.Exists(oldImagePath))
                         {
                             System.IO.File.Delete(oldImagePath);
@@ -105,12 +116,37 @@ namespace HousesForRent.Web.Controllers
                     }
 
                     using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
-                        house.Image.CopyTo(fileStream);
+                        houseVM.House.Image.CopyTo(fileStream);
 
-                    house.ImageUrl = @"\images\House\" + fileName;
+                    houseVM.House.ImageUrl = @"\images\House\" + fileName;
                 }
 
-                _unitOfWork.House.Update(house);
+                _unitOfWork.House.Update(houseVM.House);
+
+                // updating HouseAmenity
+                var existingAmenityIdList = _unitOfWork.HouseAmenity.GetAll(u => u.HouseId == houseVM.House.Id).Select(u=>u.AmenityId).ToList();
+                var selectedAmenityIdList = amenityId;
+
+                var amenitiesToRemove = existingAmenityIdList.Except(selectedAmenityIdList);
+
+                foreach (var item in amenitiesToRemove)
+                {
+                    var houseAmenityToRemove = _unitOfWork.HouseAmenity.Get(u => u.AmenityId == item && u.HouseId == houseVM.House.Id);
+                    _unitOfWork.HouseAmenity.Remove(houseAmenityToRemove);
+                }
+                
+                var amenitiesToAdd = selectedAmenityIdList.Except(existingAmenityIdList);
+
+                foreach (var item in amenitiesToAdd)
+                {
+                    HouseAmenity houseAmenityToAdd = new()
+                    {
+                        AmenityId = item,
+                        HouseId = houseVM.House.Id
+                    };
+                    _unitOfWork.HouseAmenity.Add(houseAmenityToAdd);
+                }
+
                 _unitOfWork.House.Save();
                 TempData["success"] = "The house was updated successfully";
                 return RedirectToAction("Index");
@@ -119,7 +155,7 @@ namespace HousesForRent.Web.Controllers
             else
                 TempData["error"] = "The house wasn't deleted successfully";
 
-            return View(house);
+            return View(houseVM);
         }
 
         public IActionResult Delete(int id)

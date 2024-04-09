@@ -1,5 +1,4 @@
-﻿@model House
-
+﻿@model HouseVM
 
 <div class="row justify-content-md-center">
     <div class="col-lg-9">
@@ -7,72 +6,99 @@
             <h2 class="text-center p-3">Update house</h2>
             <div class="p-2">
                 <form method="post" class="row" enctype="multipart/form-data">
-                    <input hidden asp-for="Id" />
+                    <input hidden asp-for="@Model.House.Id" />
                     <div class="row p3">
                         <div class="form-floating py-2 col-12 col-md-6">
-                            <input asp-for="Name" class="form-control border shadow" />
-                            <label asp-for="Name" class="m-2"></label>
-                            <span asp-validation-for="Name" class="text-danger"></span>
+                            <input asp-for="@Model.House.Name" class="form-control border shadow" />
+                            <label asp-for="@Model.House.Name" class="m-2"></label>
+                            <span asp-validation-for="@Model.House.Name" class="text-danger"></span>
                         </div>
                         <div class="form-floating py-2 col-12 col-md-6">
-                            <input asp-for="Location" class="form-control border shadow" />
-                            <label asp-for="Location" class="m-2"></label>
-                            <span asp-validation-for="Location" class="text-danger"></span>
+                            <input asp-for="@Model.House.Location" class="form-control border shadow" />
+                            <label asp-for="@Model.House.Location" class="m-2"></label>
+                            <span asp-validation-for="@Model.House.Location" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="row p3">
                         <div class="form-floating py-2 col-12 col-md-6">
-                            <input asp-for="Area" class="form-control border shadow" />
-                            <label asp-for="Area" class="m-2"></label>
-                            <span asp-validation-for="Area" class="text-danger"></span>
+                            <input asp-for="@Model.House.Area" class="form-control border shadow" />
+                            <label asp-for="@Model.House.Area" class="m-2"></label>
+                            <span asp-validation-for="@Model.House.Area" class="text-danger"></span>
                         </div>
                         <div class="form-floating py-2 col-12 col-md-6">
-                            <input asp-for="RoomsQuantity" class="form-control border shadow" />
-                            <label asp-for="RoomsQuantity" class="m-2"></label>
-                            <span asp-validation-for="RoomsQuantity" class="text-danger"></span>
+                            <input asp-for="@Model.House.RoomsQuantity" class="form-control border shadow" />
+                            <label asp-for="@Model.House.RoomsQuantity" class="m-2"></label>
+                            <span asp-validation-for="@Model.House.RoomsQuantity" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="row p3">
                         <div class="form-floating py-2 col-12 col-md-6">
-                            <input asp-for="SingleBedQuantity" class="form-control border shadow" />
-                            <label asp-for="SingleBedQuantity" class="m-2"></label>
-                            <span asp-validation-for="SingleBedQuantity" class="text-danger"></span>
+                            <input asp-for="@Model.House.SingleBedQuantity" class="form-control border shadow" />
+                            <label asp-for="@Model.House.SingleBedQuantity" class="m-2"></label>
+                            <span asp-validation-for="@Model.House.SingleBedQuantity" class="text-danger"></span>
                         </div>
                         <div class="form-floating py-2 col-12 col-md-6">
-                            <input asp-for="DoubleBedQuantity" class="form-control border shadow" />
-                            <label asp-for="DoubleBedQuantity" class="m-2"></label>
-                            <span asp-validation-for="DoubleBedQuantity" class="text-danger"></span>
+                            <input asp-for="@Model.House.DoubleBedQuantity" class="form-control border shadow" />
+                            <label asp-for="@Model.House.DoubleBedQuantity" class="m-2"></label>
+                            <span asp-validation-for="@Model.House.DoubleBedQuantity" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="row p3">
                         <div class="form-floating py-2 col-12 col-md-6">
-                            <input asp-for="Price" class="form-control border shadow" />
-                            <label asp-for="Price" class="m-2"></label>
-                            <span asp-validation-for="Price" class="text-danger"></span>
+                            <input asp-for="@Model.House.Price" class="form-control border shadow" />
+                            <label asp-for="@Model.House.Price" class="m-2"></label>
+                            <span asp-validation-for="@Model.House.Price" class="text-danger"></span>
                         </div>
                         <div class="form-floating py-2 col-12 col-md-6">
-                            <input asp-for="DiscountPrice" class="form-control border shadow" />
-                            <label asp-for="DiscountPrice" class="m-2"></label>
-                            <span asp-validation-for="DiscountPrice" class="text-danger"></span>
+                            <input asp-for="@Model.House.DiscountPrice" class="form-control border shadow" />
+                            <label asp-for="@Model.House.DiscountPrice" class="m-2"></label>
+                            <span asp-validation-for="@Model.House.DiscountPrice" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="row justify-content-md-center p3">
-                        <div class="form-floating py-2 col-12">
-                            <input asp-for="ImageUrl" hidden class="form-control border shadow" />
-                            <input asp-for="Image" class="form-control border shadow" />
-                            <label asp-for="ImageUrl" class="m-2"></label>
-                            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    <div class="row p3">
+                        <div class="col-12 col-md-6 py-2">
+                            <div class="form-floating py-2">
+                                <input asp-for="@Model.House.ImageUrl" hidden class="form-control border shadow" />
+                                <input asp-for="@Model.House.Image" class="form-control border shadow" />
+                                <label asp-for="@Model.House.ImageUrl" class="my-1"></label>
+                                <span asp-validation-for="@Model.House.ImageUrl" class="text-danger"></span>
+                            </div>
+                            <div class="form-floating py-2">
+                                <textarea asp-for="@Model.House.Description" class="form-control border shadow custom-textarea" style="height: 150px;"></textarea>
+                                <label asp-for="@Model.House.Description" class="m-1"></label>
+                                <span asp-validation-for="@Model.House.Description" class="text-danger"></span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row justify-content-md-center p3">
-                        <div class="form-floating py-2 col-12">
-                            <input asp-for="Description" class="form-control border shadow" />
-                            <label asp-for="Description" class="m-2"></label>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                        </div>
+                        @if (Model.AmenityList.Count != 0)
+                        {
+                            <div class="form-floating py-2 col-12 col-md-6">
+                                Choose amenities from the list:
+                                @foreach (var amenity in Model.AmenityList)
+                                {
+                                    if (Model.HouseAmenitiesIdList.Contains(amenity.Id))
+                                    {
+                                        <div class="form-check py-1">
+                                            <input class="form-check-input" type="checkbox" value="@amenity.Id" name="amenityId" checked="">
+                                            <label class="form-check-label" for="flexCheckDefault">
+                                                @amenity.Name
+                                            </label>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                    <div class="form-check py-1">
+                                        <input class="form-check-input" type="checkbox" value="@amenity.Id" name="amenityId">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            @amenity.Name
+                                        </label>
+                                    </div>                                        
+                                    }
+                                }
+                            </div>
+                        }
                     </div>
                     <div class="row justify-content-md-center pt-2">
                         <div class="col-6 col-md-6">
@@ -90,10 +116,10 @@
             </div>
         </div>
     </div>
-    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    @if (!string.IsNullOrEmpty(Model.House.ImageUrl))
     {
     <div class="col-lg-3 my-2">
-        <img src="@Model.ImageUrl" width="100%"/>
+        <img src="@Model.House.ImageUrl" width="100%"/>
         </div>        
     }
 
