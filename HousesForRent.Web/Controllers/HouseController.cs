@@ -1,6 +1,8 @@
 ﻿using HousesForRent.Application.Common.Interfaces;
 using HousesForRent.Domain.Entities;
+using HousesForRent.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 
 namespace HousesForRent.Web.Controllers
 {
@@ -23,10 +25,15 @@ namespace HousesForRent.Web.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            HouseVM houseVM = new()
+            {
+                AmenityList = _unitOfWork.Amenity.GetAll().ToList()
+            };
+
+            return View(houseVM);
         }
         [HttpPost]
-        public IActionResult Create(House house)
+        public IActionResult Create(House house, int[] amenityId)
         {
             if (house.Price < house.DiscountPrice)
             {
@@ -34,7 +41,7 @@ namespace HousesForRent.Web.Controllers
             }
             if (ModelState.IsValid)
             {
-                if(house.Image != null)
+                if (house.Image != null)
                 {
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(house.Image.FileName);
                     string imagePath = Path.Combine(_webHostEnviroment.WebRootPath, @"images\House");
@@ -46,6 +53,18 @@ namespace HousesForRent.Web.Controllers
                 }
                 _unitOfWork.House.Add(house);
                 _unitOfWork.House.Save();
+
+                if (amenityId is not null)
+                {
+                    foreach(var id in amenityId)
+                    {
+                        HouseAmenity houseAmenity = new HouseAmenity();
+                        houseAmenity.HouseId =house.Id;
+                        houseAmenity.AmenityId = id;
+                        _unitOfWork.HouseAmenity.Add(houseAmenity);
+                        _unitOfWork.House.Save();
+                    }
+                }
                 TempData["success"] = "The house was created successfully";
 
                 return RedirectToAction("Index");
