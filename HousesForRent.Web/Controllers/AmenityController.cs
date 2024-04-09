@@ -43,7 +43,7 @@ namespace HousesForRent.Web.Controllers
 
         public IActionResult Update(int id)
         {
-            var amenity = _unitOfWork.House.Get(u => u.Id == id);
+            var amenity = _unitOfWork.Amenity.Get(u => u.Id == id);
             if (amenity is not null)
             {
                 return View(amenity);
