@@ -1,0 +1,37 @@
+﻿@model List<Amenity>
+
+<h2 class="text-center p-3">Amenity list</h2>
+
+<div class="row justify-content-md-center">
+    <div class="col-lg-9">
+        <div class="pb-2">
+            <a asp-controller="Amenity" asp-action="Create" class="btn btn-primary">Create a new amenity</a>
+        </div>
+        <table class="table table-bordered table-hover table-dark">
+            <thead class="bg-primary text-center align-middle">
+                <tr>
+                    <th style="width:30%">Name</th>
+                    <th style="width:55%">Description</th>
+                    <th style="width:15%"></th>
+                </tr>
+            </thead>
+
+            <tbody class="table-light">
+                @foreach (var amenity in Model)
+                {
+                    <tr>
+                        <td>@amenity.Name</td>
+                        <td>@amenity.Description</td>
+                        <td>
+                            <div class=" pt-2 text-center ">
+                                <a asp-controller="Amenity" asp-action="Update" asp-route-id="@amenity.Id" class="btn btn-primary m-1"><i class="bi bi-pencil-square"></i></a>
+                                <a asp-controller="Amenity" asp-action="Delete" asp-route-id="@amenity.Id" class="btn btn-primary m-1"><i class="bi bi-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

@@ -9,5 +9,7 @@ namespace HousesForRent.Application.Common.Interfaces
     public interface IUnitOfWork
     {
         IHouseRepository House {  get; }
+        IAmenityRepository Amenity { get; }
+        IHouseAmenityRepository HouseAmenity { get; }
     }
 }
