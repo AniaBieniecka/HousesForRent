@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -44,6 +45,9 @@ namespace HousesForRent.Domain.Entities
         public string? ImageUrl { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
+
+        [ValidateNever]
+        IEnumerable<HouseAmenity> HouseAmenities { get; set; }
 
     }
 }
