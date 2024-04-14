@@ -1,4 +1,6 @@
+using HousesForRent.Application.Common.Interfaces;
 using HousesForRent.Web.Models;
+using HousesForRent.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,15 +9,25 @@ namespace HousesForRent.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IUnitOfWork _uniUnitOfWork;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
         {
             _logger = logger;
+            _uniUnitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var homeVM = new HomeVM()
+            {
+                HouseList = _uniUnitOfWork.House.GetAll(includeProperties: "houseAmenities"),
+                NightsQty = 1,
+                CheckInDate = DateOnly.FromDateTime(DateTime.Now),
+                AmenityList = _uniUnitOfWork.Amenity.GetAll()
+            };
+
+            return View(homeVM);
         }
 
         public IActionResult Privacy()
