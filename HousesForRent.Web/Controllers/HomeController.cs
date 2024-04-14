@@ -21,9 +21,10 @@ namespace HousesForRent.Web.Controllers
         {
             var homeVM = new HomeVM()
             {
-                HouseList = _uniUnitOfWork.House.GetAll(),
+                HouseList = _uniUnitOfWork.House.GetAll(includeProperties: "houseAmenities"),
                 NightsQty = 1,
-                CheckInDate = DateOnly.FromDateTime(DateTime.Now)
+                CheckInDate = DateOnly.FromDateTime(DateTime.Now),
+                AmenityList = _uniUnitOfWork.Amenity.GetAll()
             };
 
             return View(homeVM);
