@@ -9,11 +9,12 @@ using System.Threading.Tasks;
 
 namespace HousesForRent.Infrastructure.Data
 {
-    public class ApplicationDbContext: IdentityDbContext
+    public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<House> Houses { get; set; }
         public DbSet<Amenity> Amenities { get; set; }
         public DbSet<HouseAmenity> HouseAmenities { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     }
 }
