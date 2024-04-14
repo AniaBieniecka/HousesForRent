@@ -53,6 +53,9 @@ namespace HousesForRent.Web.Controllers
 
                     house.ImageUrl = @"\images\House\" + fileName;
                 }
+
+                house.Occupancy = house.SingleBedQuantity + house.DoubleBedQuantity * 2;
+
                 _unitOfWork.House.Add(house);
                 _unitOfWork.House.Save();
 
