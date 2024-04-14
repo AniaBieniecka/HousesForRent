@@ -47,7 +47,7 @@ namespace HousesForRent.Domain.Entities
         public DateTime? UpdatedDate { get; set; }
 
         [ValidateNever]
-        IEnumerable<HouseAmenity> HouseAmenities { get; set; }
+        public IEnumerable<HouseAmenity> houseAmenities { get; set; }
 
     }
 }
