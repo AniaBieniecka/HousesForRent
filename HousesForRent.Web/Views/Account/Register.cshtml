@@ -13,6 +13,7 @@
                     <div class="row">
                         <section>
                             <form method="post">
+                                <input hidden asp-for="RedirectUrl" />
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 <div class="form-floating m-3">
                                     <input asp-for="Email" class="form-control border shadow" aria-required="true" />
