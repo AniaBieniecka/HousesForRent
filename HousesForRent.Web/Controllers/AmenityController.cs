@@ -1,10 +1,13 @@
 ﻿using HousesForRent.Application.Common.Interfaces;
+using HousesForRent.Application.Common.Utility;
 using HousesForRent.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace HousesForRent.Web.Controllers
 {
+    [Authorize(Roles =SD.Role_Admin)]
     public class AmenityController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
