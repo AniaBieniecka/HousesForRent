@@ -35,12 +35,37 @@ namespace HousesForRent.Web.Controllers
 
             return View(loginVM);
         }
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginVM loginVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _signInManager.PasswordSignInAsync(loginVM.Email, loginVM.Password, loginVM.RememberMe, false);
+                if (result.Succeeded)
+                {
+
+                    if (string.IsNullOrEmpty(loginVM.RedirectUrl))
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        return LocalRedirect(loginVM.RedirectUrl);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid login attempt.");
+                }
+            }
+            return View(loginVM);
+        }
         public IActionResult Register()
         {
             if (!_roleManager.RoleExistsAsync(SD.Role_Admin).GetAwaiter().GetResult())
             {
-            _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).Wait();
-            _roleManager.CreateAsync(new IdentityRole(SD.Role_Customer)).Wait();
+                _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).Wait();
+                _roleManager.CreateAsync(new IdentityRole(SD.Role_Customer)).Wait();
             }
 
             RegisterVM registerVM = new()
@@ -72,7 +97,7 @@ namespace HousesForRent.Web.Controllers
 
             if (result.Succeeded)
             {
-                if(!string.IsNullOrEmpty(registerVM.Role)) 
+                if (!string.IsNullOrEmpty(registerVM.Role))
                 {
                     await _userManager.AddToRoleAsync(user, registerVM.Role);
                 }
@@ -83,9 +108,9 @@ namespace HousesForRent.Web.Controllers
 
                 await _signInManager.SignInAsync(user, isPersistent: false);
 
-                if(string.IsNullOrEmpty(registerVM.RedirectUrl))
+                if (string.IsNullOrEmpty(registerVM.RedirectUrl))
                 {
-                return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Home");
                 }
                 else
                 {
@@ -93,7 +118,7 @@ namespace HousesForRent.Web.Controllers
                 }
             }
 
-            foreach(var error in result.Errors)
+            foreach (var error in result.Errors)
             {
                 ModelState.AddModelError("", error.Description);
             }
