@@ -1,0 +1,98 @@
+﻿@model HomeVM
+
+<div id="HouseGrid">
+    <div class="row justify-content-center p-3">
+        @foreach (var house in Model.HouseList)
+        {
+            <div class="col-lg-4">
+                <div class="card bg-light my-2">
+                    <div class="row p-3 justify-content-end">
+                        <div class="col-12 col-xl-6">
+                            <button type="button" class="btn btn-primary w-100" data-toggle="modal" data-target="#detailView-@(house.Id)">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row align">
+                        <h3 class="text-primary px-4">@house.Name</h3>
+                    </div>
+                    <div class="row px-2 ">
+                        <img src="@house.ImageUrl" class="w-100" style="max-height: 300px" />
+                    </div>
+                    <div class="row p-3">
+                        <div class="col-12">
+                            <h4 class="text-primary">Price: @house.Price.ToString("c")</h4>
+                            <p>Max. occupancy: @house.Occupancy</p>
+                            <p>Area: @house.Area m<sup>2</sup></p>
+                        </div>
+                        <div class="col-12 col-xxl-6 align-content-end">
+                            @if (house.IsBooked == false)
+                            {
+                                <a asp-controller="House" asp-action="Book" class="btn btn-primary w-100">
+                                    Book
+                                </a>
+                            }
+                            else
+                            {
+                                <button class="btn btn-primary disabled w-100">
+                                    Not available
+                                </button>
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade modal-xl" id="detailView-@(@house.Id)" tabindex="-1" role="dialog" aria-labelledby="viewDetailLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewDetailLabel">Details @house.Name</h5>
+                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-5">
+                                    <img src="@house.ImageUrl" class="w-100" />
+                                </div>
+                                <div class="col-7">
+                                    <p>
+                                        @house.Description
+                                    </p>
+                                    @if (house.houseAmenities != null && house.houseAmenities.Count() > 0)
+                                    {
+                                        <p>
+                                            Amenities:
+                                        </p>
+                                        <ul>
+                                            @foreach (var houseAmenity in house.houseAmenities)
+                                            {
+                                                <li>
+                                                    @Model.AmenityList.FirstOrDefault(u => u.Id == houseAmenity.AmenityId).Name
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                    <p>
+                                        Max. occupancy: @house.Occupancy <br />
+                                        Area: @house.Area m<sup>2</sup> <br />
+                                        Location: @house.Location
+                                    </p>
+                                    <h4 class="text-primary">Price: @house.Price.ToString("c")</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <a asp-controller="House" asp-action="Book" class="btn btn-primary">
+                                Book
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -29,6 +29,20 @@ namespace HousesForRent.Web.Controllers
 
             return View(homeVM);
         }
+        
+        public IActionResult ShowHousesByDate(HomeVM homeVM)
+        {
+            homeVM.HouseList = _uniUnitOfWork.House.GetAll(includeProperties: "houseAmenities");
+            homeVM.AmenityList = _uniUnitOfWork.Amenity.GetAll();
+
+            //setting isBooked = true for one of the house for testing
+            if(homeVM.HouseList.FirstOrDefault(u => u.Id == 1) is not null)
+            {
+                homeVM.HouseList.FirstOrDefault(u => u.Id == 1).IsBooked = true;
+            }
+
+            return PartialView("_HouseGrid", homeVM);
+        }
 
         public IActionResult Privacy()
         {
