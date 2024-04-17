@@ -16,5 +16,6 @@ namespace HousesForRent.Infrastructure.Data
         public DbSet<Amenity> Amenities { get; set; }
         public DbSet<HouseAmenity> HouseAmenities { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
     }
 }

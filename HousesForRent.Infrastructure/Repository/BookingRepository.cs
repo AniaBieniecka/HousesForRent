@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace HousesForRent.Infrastructure.Repository
 {
-    public class BookingRepository : Repository<Booking>, IBookingRepository
+    public class AmenityRepository : Repository<Amenity>, IAmenityRepository
     {
         private readonly ApplicationDbContext _db;
-        public BookingRepository(ApplicationDbContext db): base(db) { 
+        public AmenityRepository(ApplicationDbContext db): base(db) { 
             _db = db; }
 
         public void Save()
@@ -22,9 +22,9 @@ namespace HousesForRent.Infrastructure.Repository
             _db.SaveChanges();
         }
 
-        public void Update(Booking booking)
+        public void Update(Amenity amenity)
         {
-            _db.Update(booking);
+            _db.Update(amenity);
         }
     }
 }
