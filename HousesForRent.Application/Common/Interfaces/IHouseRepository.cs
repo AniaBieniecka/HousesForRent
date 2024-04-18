@@ -12,6 +12,7 @@ namespace HousesForRent.Application.Common.Interfaces
     {
         void Update(House house);
         void Save();
+        public IEnumerable<House> GetAllHouses();
 
     }
 }

@@ -26,5 +26,12 @@ namespace HousesForRent.Infrastructure.Repository
         {
             _db.Update(house);
         }
+        public IEnumerable<House> GetAllHouses()
+        {
+            IQueryable<House> query = dbSet;
+            query = query.Include(u => u.houseAmenities).ThenInclude(e=>e.amenity);
+
+            return query.ToList();
+        }
     }
 }
