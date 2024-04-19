@@ -18,7 +18,7 @@
                     </div>
                     <div class="container px-2 d-flex justify-content-center align-items-center" style="height: 400px;">
 
-                            <img src="@house.ImageUrl" class="img-fluid" style="max-width: 100%; max-height: 100%;" />
+                        <img src="@house.ImageUrl" class="img-fluid" style="max-width: 100%; max-height: 100%;" />
 
                     </div>
                     <div class="row p-3">
@@ -28,20 +28,24 @@
                             <p>Area: @house.Area m<sup>2</sup></p>
                         </div>
                         <div class="col-12 col-xxl-6 align-content-end">
-                            @if (house.IsBooked == false)
-                            {
-                                <a asp-controller="Booking" asp-action="ProcessBooking" asp-route-houseId="@house.Id"
-                                   asp-route-checkInDate="@Model.CheckInDate" asp-route-nightsQty="@Model.NightsQty" class="btn btn-primary w-100">
-                                    Book
-                                </a>
-                            }
-                            else
-                            {
-                                <button class="btn btn-primary disabled w-100">
-                                    Not available
-                                </button>
 
+                            @if (Model.CheckInDate >= DateOnly.FromDateTime(DateTime.Now))
+                            {
+                                @if (house.IsBooked == false)
+                                {
+                                    <a asp-controller="Booking" asp-action="ProcessBooking" asp-route-houseId="@house.Id"
+                                       asp-route-checkInDate="@Model.CheckInDate" asp-route-nightsQty="@Model.NightsQty" class="btn btn-primary w-100">
+                                        Book
+                                    </a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-primary disabled w-100">
+                                        Not available
+                                    </button>
+                                }                                
                             }
+
                         </div>
                     </div>
                 </div>
