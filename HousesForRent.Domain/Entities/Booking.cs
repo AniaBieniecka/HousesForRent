@@ -24,21 +24,28 @@ namespace HousesForRent.Domain.Entities
         [ForeignKey("HouseId")]
         public House House { get; set; }
         [Required]
+        [Display(Name ="Name")]
         public string UserName { get; set; }
         [Required]
+        [Display(Name = "Email")]
         public string UserEmail { get; set; }
         public string? Phone {  get; set; }
 
         [Required]
+        [Display(Name = "Nights quantity")]
+
         public int NightsQty { get; set; }
         [Required]
         public double Cost { get; set; }
         public string? Status { get; set; }
         [Required]
+        [Display(Name = "Booking date")]
         public DateTime BookingDate { get; set; }
         [Required]
+        [Display(Name = "Check-in date")]
         public DateOnly CheckInDate { get; set; }
         [Required]
+        [Display(Name = "Check-out date")]
         public DateOnly CheckOutDate { get; set; }
         public bool IsPaymentSuccessful { get; set; } = false;
         public DateTime PaymentDate { get; set; }

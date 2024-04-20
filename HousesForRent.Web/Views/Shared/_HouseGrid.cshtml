@@ -32,9 +32,11 @@
                             @if (Model.CheckInDate >= DateOnly.FromDateTime(DateTime.Now))
                             {
                                 @if (house.IsBooked == false)
-                                {
-                                    <a asp-controller="Booking" asp-action="ProcessBooking" asp-route-houseId="@house.Id"
-                                       asp-route-checkInDate="@Model.CheckInDate" asp-route-nightsQty="@Model.NightsQty" class="btn btn-primary w-100">
+                                { 
+                                    <a asp-controller="Booking" asp-action="ProcessBooking"
+                                       asp-route-houseId="@house.Id" asp-route-checkInDate="@Model.CheckInDate"
+                                       asp-route-nightsQty="@Model.NightsQty"
+                                       class="btn btn-primary w-100">
                                         Book
                                     </a>
                                 }
@@ -43,9 +45,8 @@
                                     <button class="btn btn-primary disabled w-100">
                                         Not available
                                     </button>
-                                }                                
+                                }
                             }
-
                         </div>
                     </div>
                 </div>

@@ -33,5 +33,12 @@ namespace HousesForRent.Infrastructure.Repository
 
             return query.ToList();
         }
+        public House GetHouse()
+        {
+            IQueryable<House> query = dbSet;
+            query = query.Include(u => u.houseAmenities).ThenInclude(e => e.amenity);
+
+            return query.FirstOrDefault();
+        }
     }
 }
