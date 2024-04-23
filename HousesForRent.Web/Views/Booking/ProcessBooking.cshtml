@@ -23,6 +23,12 @@
         </div>
         <div class="col-12 col-lg-5 p-3 border">
             <form method="post">
+                <input asp-for="HouseId" hidden />               
+                <input asp-for="UserId" hidden />
+                <input asp-for="CheckInDate" hidden />
+                <input asp-for="CheckOutDate" hidden />
+                <input asp-for="NightsQty" hidden />
+
                 <div class="row">
                     <div class="col-12 p-4">
                         <h3 class="text-primary text-center">Eneter booking details:</h3>
