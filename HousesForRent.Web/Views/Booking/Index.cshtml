@@ -1,8 +1,22 @@
-﻿
+﻿@model string
 <h2 class="text-center p-3">Booking list</h2>
 
 <div class="row justify-content-md-center">
     <div class="col">
+            <div class="btn-group py-2" role="group" aria-label="Filter on bookings">
+            <input type="radio" class="btn-check" name="status" id="btnradio1" value="@SD.StatusPending" checked autocomplete="off" onchange="filterTable(this)">
+                <label class="btn btn-outline-primary" for="btnradio1">@SD.StatusPending</label>
+                <input type="radio" class="btn-check" name="status" id="btnradio2" value="@SD.StatusApproved" autocomplete="off" onchange="filterTable(this)">
+                <label class="btn btn-outline-primary" for="btnradio2">@SD.StatusApproved</label>
+                <input type="radio" class="btn-check" name="status" id="btnradio3" value="@SD.StatusCheckedIn" autocomplete="off" onchange="filterTable(this)">
+                <label class="btn btn-outline-primary" for="btnradio3">@SD.StatusCheckedIn</label>
+                <input type="radio" class="btn-check" name="status" id="btnradio4" value="@SD.StatusCompleted" autocomplete="off" onchange="filterTable(this)">
+                <label class="btn btn-outline-primary" for="btnradio4">@SD.StatusCompleted</label>
+                <input type="radio" class="btn-check" name="status" id="btnradio5" value="@SD.StatusCancelled" autocomplete="off" onchange="filterTable(this)">
+                <label class="btn btn-outline-primary" for="btnradio5">@SD.StatusCancelled</label>
+
+            </div>
+        </div>
         <table id="tblBookings" class="table table-bordered table-hover table-dark">
             <thead class="bg-primary text-center align-middle">
                 <tr>
@@ -24,6 +38,6 @@
     </div>
 </div>
 
-@section Scripts{
-    <script src ="~/js/booking.js"></script>
+@section Scripts {
+    <script src="~/js/booking.js"></script>
 }

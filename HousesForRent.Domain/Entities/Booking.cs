@@ -48,10 +48,15 @@ namespace HousesForRent.Domain.Entities
         [Display(Name = "Check-out date")]
         public DateOnly CheckOutDate { get; set; }
         public bool IsPaymentSuccessful { get; set; } = false;
+        [Display(Name = "Payment date")]
         public DateTime PaymentDate { get; set; }
+        [Display(Name = "Stripe session Id")]
         public string? StripeSessionId { get; set; }
+        [Display(Name = "Stripe paymen intent Id")]
         public string? StripePaymentIntentId { get; set; }
+        [Display(Name = "Actual check-in date")]
         public DateTime ActualCheckInDate { get; set; }
+        [Display(Name = "Actual check-out date")]
         public DateTime ActualCheckOutDate { get; set; }
 
     }

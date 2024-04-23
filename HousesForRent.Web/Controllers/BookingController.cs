@@ -118,6 +118,13 @@ namespace HousesForRent.Web.Controllers
             return View(bookingId);
         }
 
+        [Authorize]
+        public  IActionResult BookingDetails (int bookingId)
+        {
+            Booking bookingFromDB = _unitOfWork.Booking.Get(u => u.Id == bookingId, includeProperties: "User,House");
+            return View(bookingFromDB);
+        }
+
         #region API CALLS
         [HttpGet]
         [Authorize]
@@ -132,7 +139,7 @@ namespace HousesForRent.Web.Controllers
                 var claimsIdentity = (ClaimsIdentity)User.Identity;
                 var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                objBookings = _unitOfWork.Booking.GetAll(u => u.UserId == userId, includeProperties:"User, House");
+                objBookings = _unitOfWork.Booking.GetAll(u => u.UserId == userId, includeProperties:"User,House");
             }
             if (!string.IsNullOrEmpty(status))
             {

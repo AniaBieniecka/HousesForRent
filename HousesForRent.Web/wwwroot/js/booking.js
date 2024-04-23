@@ -4,10 +4,17 @@ $(document).ready(function () {
     loadDataTable();
 });
 
-function loadDataTable() {
+function loadDataTable(status) {
+    if ($.fn.DataTable.isDataTable('#tblBookings')) {
+        $('#tblBookings').DataTable().destroy();
+    }
+    if (typeof status === 'undefined') {
+        status = 'Pending';
+    }
+
     dataTable = $('#tblBookings').dataTable({
         "ajax": {
-            url: '/booking/getall'
+            url: '/booking/getall?status=' + status,
         },
         "columns": [
             { data: 'id', width: "5%" },
@@ -30,4 +37,11 @@ function loadDataTable() {
             }
         ]
     })
+}
+
+function filterTable(selectedStatus) {
+
+    var selectedValue = selectedStatus.value;
+    loadDataTable(selectedValue);
+
 }
