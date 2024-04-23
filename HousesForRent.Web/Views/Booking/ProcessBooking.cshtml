@@ -1,0 +1,83 @@
+﻿@model Booking
+
+<div class="container p-2">
+    <div class="row">
+        <div class="col-12 col-lg-7 p-3 border">
+            <div class="row">
+                <h3 class="text-primary text-center">House details</h3>
+            </div>
+            <div class="text-end">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
+                    Modify selection
+                </a>
+            </div>
+            <hr>
+            <partial name="_HouseDetails" model="@Model.House" />
+            <hr>
+            <div class="text-end">
+                <h4>
+                    Total cost: @Model.Cost.ToString("c");
+                </h4>
+            </div>
+
+        </div>
+        <div class="col-12 col-lg-5 p-3 border">
+            <form method="post">
+                <input asp-for="HouseId" hidden />               
+                <input asp-for="UserId" hidden />
+                <input asp-for="CheckInDate" hidden />
+                <input asp-for="CheckOutDate" hidden />
+                <input asp-for="NightsQty" hidden />
+
+                <div class="row">
+                    <div class="col-12 p-4">
+                        <h3 class="text-primary text-center">Eneter booking details:</h3>
+                    </div>
+                </div>
+                <div class="form-group p-2">
+                    <label asp-for="UserName"></label>
+                    <input asp-for="UserName" class="form-control" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="form-group p-2">
+                    <label asp-for="UserEmail"></label>
+                    <input asp-for="UserEmail" class="form-control" />
+                    <span asp-validation-for="UserEmail" class="text-danger"></span>
+                </div>
+                <div class="form-group p-2">
+                    <label asp-for="Phone"></label>
+                    <input asp-for="Phone" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+                <div class="form-group p-2">
+                    <label asp-for="CheckInDate"></label>
+                    <input asp-for="CheckInDate" disabled class="form-control" />
+                </div>
+                <div class="form-group p-2">
+                    <label asp-for="CheckOutDate"></label>
+                    <input asp-for="CheckOutDate" disabled class="form-control" />
+                </div>
+                <div class="form-group p-2">
+                    <label asp-for="NightsQty"></label>
+                    <input asp-for="NightsQty" disabled class="form-control" />
+                </div>
+                <div class="form-group p-2">
+                    @if (Model.House.IsBooked)
+                    {
+
+                        <input class="btn btn-primary disabled form-control" value="Sold Out" />
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-primary form-control">CheckOut Now</button>
+
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

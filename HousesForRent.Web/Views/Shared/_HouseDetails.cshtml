@@ -1,0 +1,32 @@
+﻿@model House
+
+<div class="row">
+    <div class="col-5">
+        <img src="@Model.ImageUrl" class="w-100" />
+    </div>
+    <div class="col-7">
+        <p>
+            @Model.Description
+        </p>
+        @if (Model.houseAmenities != null && Model.houseAmenities.Count() > 0)
+        {
+            <p>
+                Amenities:
+            </p>
+            <ul>
+                @foreach (var houseAmenity in Model.houseAmenities)
+                {
+                    <li>
+                        @houseAmenity.amenity.Name
+                    </li>
+                }
+            </ul>
+        }
+        <p>
+            Max. occupancy: @Model.Occupancy <br />
+            Area: @Model.Area m<sup>2</sup> <br />
+            Location: @Model.Location
+        </p>
+        <h4 class="text-primary">Price: @Model.Price.ToString("c")</h4>
+    </div>
+</div>

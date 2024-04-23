@@ -15,12 +15,16 @@ namespace HousesForRent.Infrastructure.Repository
         public IHouseRepository House {get; private set;}
         public IAmenityRepository Amenity { get; private set;}
         public IHouseAmenityRepository HouseAmenity { get; private set;}
+        public IBookingRepository Booking { get; private set;}
+        public IApplicationUserRepository ApplicationUser { get; private set;}
         public UnitOfWork(ApplicationDbContext db)
     {
             _db = db;
             House = new HouseRepository(_db);
             Amenity = new AmenityRepository(_db);
             HouseAmenity = new HouseAmenityRepository(_db);
+            Booking = new BookingRepository(_db);
+            ApplicationUser = new ApplicationUserRepository(_db);
         }
     }
 }

@@ -45,6 +45,8 @@ namespace HousesForRent.Domain.Entities
         public string? ImageUrl { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        [NotMapped]
+        public bool IsBooked { get; set; } = false;
 
         [ValidateNever]
         public IEnumerable<HouseAmenity> houseAmenities { get; set; }

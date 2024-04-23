@@ -8,10 +8,13 @@ using System.Threading.Tasks;
 
 namespace HousesForRent.Application.Common.Interfaces
 {
-    public interface IAmenityRepository: IRepository<Amenity>
+    public interface IHouseRepository: IRepository<House>
     {
-        void Update(Amenity amenity);
+        void Update(House house);
         void Save();
+        public IEnumerable<House> GetAllHouses();
+        public House GetHouse();
+
 
     }
 }

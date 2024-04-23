@@ -11,5 +11,7 @@ namespace HousesForRent.Application.Common.Interfaces
         IHouseRepository House {  get; }
         IAmenityRepository Amenity { get; }
         IHouseAmenityRepository HouseAmenity { get; }
+        IBookingRepository Booking { get; }
+        IApplicationUserRepository ApplicationUser { get; }
     }
 }
