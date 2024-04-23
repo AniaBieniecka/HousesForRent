@@ -12,6 +12,8 @@ namespace HousesForRent.Application.Common.Interfaces
     {
         void Update(Booking booking);
         void Save();
+        void UpdateStatus(int bookingId, string bookingStatus);
+        void UpdateStripePaymentID (int bookingId, string sesstionId, string paymentIntentId);
 
     }
 }
