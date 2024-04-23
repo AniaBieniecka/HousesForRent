@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Stripe;
 using Stripe.Checkout;
+using Stripe.Issuing;
 using System.Security.Claims;
 
 namespace HousesForRent.Web.Controllers
@@ -18,6 +19,12 @@ namespace HousesForRent.Web.Controllers
         {
             _unitOfWork = unitOfWork;
         }
+        [Authorize]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
         [Authorize]
         public IActionResult ProcessBooking(int houseId, int nightsQty, string checkInDate)
         {
@@ -110,5 +117,30 @@ namespace HousesForRent.Web.Controllers
             }
             return View(bookingId);
         }
+
+        #region API CALLS
+        [HttpGet]
+        [Authorize]
+        public IActionResult GetAll(string status)
+        {
+            IEnumerable<Booking> objBookings;
+
+            if (User.IsInRole(SD.Role_Admin)){
+                objBookings = _unitOfWork.Booking.GetAll(includeProperties: "User,House");
+            } else
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                objBookings = _unitOfWork.Booking.GetAll(u => u.UserId == userId, includeProperties:"User, House");
+            }
+            if (!string.IsNullOrEmpty(status))
+            {
+                objBookings = objBookings.Where(u=>u.Status == status);
+            }
+            return Json(new { data=objBookings });
+        }
+
+        #endregion
     }
 }
