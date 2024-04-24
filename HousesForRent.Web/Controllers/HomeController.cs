@@ -1,4 +1,6 @@
 using HousesForRent.Application.Common.Interfaces;
+using HousesForRent.Application.Common.Utility;
+using HousesForRent.Domain.Entities;
 using HousesForRent.Web.Models;
 using HousesForRent.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -33,11 +35,12 @@ namespace HousesForRent.Web.Controllers
         public IActionResult ShowHousesByDate(HomeVM homeVM)
         {
             homeVM.HouseList = _uniUnitOfWork.House.GetAllHouses();
+            var bookings = _uniUnitOfWork.Booking.GetAll(u => u.Status ==SD.StatusPending || 
+            u.Status== SD.StatusApproved || u.Status == SD.StatusCheckedIn).ToList();
 
-            //setting isBooked = true for one of the house for testing
-            if(homeVM.HouseList.FirstOrDefault(u => u.Id == 1) is not null)
+            foreach (var house in homeVM.HouseList)
             {
-                homeVM.HouseList.FirstOrDefault(u => u.Id == 1).IsBooked = true;
+                house.IsBooked = SD.isHouseBooked(house.Id, homeVM.CheckInDate, homeVM.NightsQty, bookings);
             }
 
             return PartialView("_HouseGrid", homeVM);
