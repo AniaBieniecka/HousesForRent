@@ -61,6 +61,22 @@ namespace HousesForRent.Web.Controllers
             booking.Cost = house.Price * booking.NightsQty;
             booking.Status = SD.StatusPending;
             booking.BookingDate = DateTime.Now;
+
+            //checking availability:
+            var bookings = _unitOfWork.Booking.GetAll(u => u.Status == SD.StatusPending ||
+            u.Status == SD.StatusApproved || u.Status == SD.StatusCheckedIn || u.HouseId == booking.HouseId).ToList();
+            house.IsBooked = SD.isHouseBooked(house.Id, booking.CheckInDate, booking.NightsQty, bookings);
+            if(house.IsBooked)
+            {
+                TempData["error"] = "House has just been sold out";
+                return RedirectToAction(nameof(ProcessBooking), new
+                {
+                    houseId=booking.HouseId,
+                    checkInDate = booking.CheckInDate,
+                    nightsQty = booking.NightsQty
+                });
+            }
+
             _unitOfWork.Booking.Add(booking);
             _unitOfWork.Booking.Save();
 
