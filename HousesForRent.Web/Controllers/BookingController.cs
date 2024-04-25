@@ -1,6 +1,7 @@
 ﻿using HousesForRent.Application.Common.Interfaces;
 using HousesForRent.Application.Common.Utility;
 using HousesForRent.Domain.Entities;
+using HousesForRent.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -125,6 +126,36 @@ namespace HousesForRent.Web.Controllers
             return View(bookingFromDB);
         }
 
+        [HttpPost]
+        [Authorize(Roles =SD.Role_Admin)]
+        public IActionResult CheckIn(Booking booking)
+        {
+            _unitOfWork.Booking.UpdateStatus(booking.Id, SD.StatusCheckedIn);
+            _unitOfWork.Booking.Save();
+            TempData["Success"] = "Booking updated successfully";
+            return RedirectToAction(nameof(BookingDetails), new {bookingId = booking.Id});
+        }
+
+        [HttpPost]
+        [Authorize(Roles = SD.Role_Admin)]
+        public IActionResult CheckOut(Booking booking)
+        {
+            _unitOfWork.Booking.UpdateStatus(booking.Id, SD.StatusCompleted);
+            _unitOfWork.Booking.Save();
+            TempData["Success"] = "Booking completed successfully";
+            return RedirectToAction(nameof(BookingDetails), new { bookingId = booking.Id });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = SD.Role_Admin)]
+        public IActionResult Cancel(Booking booking)
+        {
+            _unitOfWork.Booking.UpdateStatus(booking.Id, SD.StatusCancelled);
+            _unitOfWork.Booking.Save();
+            TempData["Success"] = "Booking cancelled successfully";
+            return RedirectToAction(nameof(BookingDetails), new { bookingId = booking.Id });
+
+        }
         #region API CALLS
         [HttpGet]
         [Authorize]
