@@ -1,50 +1,52 @@
 ﻿@model List<House>
 
-
-<h2 class="text-center p-3">House list</h2>
-<div class="pb-2">
-    <a asp-controller="House" asp-action="Create" class="btn btn-primary">Create new house</a>
-</div>
-<table class="table table-bordered table-hover table-dark">
-    <thead class="bg-primary text-center align-middle">
-        <tr>
-            <th>Name</th>
-            <th>Location</th>
-            <th>Area</th>
-            <th>Rooms</th>
-            <th>Single beds</th>
-            <th>Double beds</th>
-            <th>Price</th>
-            <th>Discount price</th>
-            <th>Occupancy</th>
-            <th>Description</th>
-            <th></th>
-        </tr>
-    </thead>
-
-    <tbody class="table-light">
-        @foreach (var house in Model)
-        {
+<div class="container">
+    <h2 class="text-center p-3">House list</h2>
+    <div class="pb-2">
+        <a asp-controller="House" asp-action="Create" class="btn btn-primary">Create new house</a>
+    </div>
+    <table class="table table-bordered table-hover table-dark">
+        <thead class="bg-primary text-center align-middle">
             <tr>
-                <td>@house.Name</td>
-                <td>@house.Location</td>
-                <td>@house.Area</td>
-                <td>@house.RoomsQuantity</td>
-                <td>@house.SingleBedQuantity</td>
-                <td>@house.DoubleBedQuantity</td>
-                <td>@house.Price</td>
-                <td>@house.DiscountPrice</td>
-                <td>@house.Occupancy</td>
-                <td>@house.Description</td>
-                <td>
-                    <div class="d-flex flex-column">
-                        <a asp-controller="House" asp-action="Update" asp-route-id="@house.Id" class="btn btn-primary m-1"><i class="bi bi-pencil-square"></i></a>
-                        <a asp-controller="House" asp-action="Delete" asp-route-id="@house.Id" class="btn btn-primary m-1"><i class="bi bi-trash"></i></a>
-                    </div>
-                </td>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Area</th>
+                <th>Rooms</th>
+                <th>Single beds</th>
+                <th>Double beds</th>
+                <th>Price</th>
+                <th>Discount price</th>
+                <th>Occupancy</th>
+                <th>Description</th>
+                <th></th>
             </tr>
-        }
+        </thead>
 
-    </tbody>
-</table>
+        <tbody class="table-light">
+            @foreach (var house in Model)
+            {
+                <tr>
+                    <td>@house.Name</td>
+                    <td>@house.Location</td>
+                    <td>@house.Area</td>
+                    <td>@house.RoomsQuantity</td>
+                    <td>@house.SingleBedQuantity</td>
+                    <td>@house.DoubleBedQuantity</td>
+                    <td>@house.Price</td>
+                    <td>@house.DiscountPrice</td>
+                    <td>@house.Occupancy</td>
+                    <td>@house.Description</td>
+                    <td>
+                        <div class="d-flex flex-column">
+                            <a asp-controller="House" asp-action="Update" asp-route-id="@house.Id" class="btn btn-primary m-1"><i class="bi bi-pencil-square"></i></a>
+                            <a asp-controller="House" asp-action="Delete" asp-route-id="@house.Id" class="btn btn-primary m-1"><i class="bi bi-trash"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            }
 
+        </tbody>
+    </table>
+
+
+</div>

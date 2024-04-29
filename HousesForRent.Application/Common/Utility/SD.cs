@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HousesForRent.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,5 +18,32 @@ namespace HousesForRent.Application.Common.Utility
         public const string StatusCompleted = "Completed";
         public const string StatusCancelled = "Cancelled";
         public const string StatusRefunded = "Refunded";
+
+        public static bool isHouseBooked(int houseId, DateOnly wantedCheckInDate, int nightsQty, List<Booking> bookings)
+        {
+            DateOnly wantedCheckOutDate = wantedCheckInDate.AddDays(nightsQty);
+            var bookingsForSelectedHouse = bookings.Where(u=>u.HouseId== houseId).ToList();
+
+            foreach (var booking in bookingsForSelectedHouse)
+            {
+                // if wanted checkindate is between booked dates
+                if (wantedCheckInDate >= booking.CheckInDate && wantedCheckInDate < booking.CheckOutDate)
+                {
+                    return true; 
+                }
+                // if wanted checkoutdate is between booked dates
+                if (wantedCheckOutDate > booking.CheckInDate && wantedCheckOutDate <= booking.CheckOutDate)
+                {
+                    return true; 
+                }
+                // if wanted booking period inlcudes booking
+                if (wantedCheckInDate <= booking.CheckInDate && wantedCheckOutDate >= booking.CheckOutDate)
+                {
+                    return true; 
+                }
+            }
+            return false;
+
+        }
     }
 }

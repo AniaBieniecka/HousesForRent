@@ -1,12 +1,14 @@
 ﻿using HousesForRent.Application.Common.Interfaces;
 using HousesForRent.Application.Common.Utility;
 using HousesForRent.Domain.Entities;
+using HousesForRent.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Stripe;
 using Stripe.Checkout;
+using Stripe.Issuing;
 using System.Security.Claims;
 
 namespace HousesForRent.Web.Controllers
@@ -18,6 +20,12 @@ namespace HousesForRent.Web.Controllers
         {
             _unitOfWork = unitOfWork;
         }
+        [Authorize]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
         [Authorize]
         public IActionResult ProcessBooking(int houseId, int nightsQty, string checkInDate)
         {
@@ -53,6 +61,22 @@ namespace HousesForRent.Web.Controllers
             booking.Cost = house.Price * booking.NightsQty;
             booking.Status = SD.StatusPending;
             booking.BookingDate = DateTime.Now;
+
+            //checking availability:
+            var bookings = _unitOfWork.Booking.GetAll(u => u.Status == SD.StatusPending ||
+            u.Status == SD.StatusApproved || u.Status == SD.StatusCheckedIn || u.HouseId == booking.HouseId).ToList();
+            house.IsBooked = SD.isHouseBooked(house.Id, booking.CheckInDate, booking.NightsQty, bookings);
+            if(house.IsBooked)
+            {
+                TempData["error"] = "House has just been sold out";
+                return RedirectToAction(nameof(ProcessBooking), new
+                {
+                    houseId=booking.HouseId,
+                    checkInDate = booking.CheckInDate,
+                    nightsQty = booking.NightsQty
+                });
+            }
+
             _unitOfWork.Booking.Add(booking);
             _unitOfWork.Booking.Save();
 
@@ -110,5 +134,67 @@ namespace HousesForRent.Web.Controllers
             }
             return View(bookingId);
         }
+
+        [Authorize]
+        public  IActionResult BookingDetails (int bookingId)
+        {
+            Booking bookingFromDB = _unitOfWork.Booking.Get(u => u.Id == bookingId, includeProperties: "User,House");
+            return View(bookingFromDB);
+        }
+
+        [HttpPost]
+        [Authorize(Roles =SD.Role_Admin)]
+        public IActionResult CheckIn(Booking booking)
+        {
+            _unitOfWork.Booking.UpdateStatus(booking.Id, SD.StatusCheckedIn);
+            _unitOfWork.Booking.Save();
+            TempData["Success"] = "Booking updated successfully";
+            return RedirectToAction(nameof(BookingDetails), new {bookingId = booking.Id});
+        }
+
+        [HttpPost]
+        [Authorize(Roles = SD.Role_Admin)]
+        public IActionResult CheckOut(Booking booking)
+        {
+            _unitOfWork.Booking.UpdateStatus(booking.Id, SD.StatusCompleted);
+            _unitOfWork.Booking.Save();
+            TempData["Success"] = "Booking completed successfully";
+            return RedirectToAction(nameof(BookingDetails), new { bookingId = booking.Id });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = SD.Role_Admin)]
+        public IActionResult Cancel(Booking booking)
+        {
+            _unitOfWork.Booking.UpdateStatus(booking.Id, SD.StatusCancelled);
+            _unitOfWork.Booking.Save();
+            TempData["Success"] = "Booking cancelled successfully";
+            return RedirectToAction(nameof(BookingDetails), new { bookingId = booking.Id });
+
+        }
+        #region API CALLS
+        [HttpGet]
+        [Authorize]
+        public IActionResult GetAll(string status)
+        {
+            IEnumerable<Booking> objBookings;
+
+            if (User.IsInRole(SD.Role_Admin)){
+                objBookings = _unitOfWork.Booking.GetAll(includeProperties: "User,House");
+            } else
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                objBookings = _unitOfWork.Booking.GetAll(u => u.UserId == userId, includeProperties:"User,House");
+            }
+            if (!string.IsNullOrEmpty(status))
+            {
+                objBookings = objBookings.Where(u=>u.Status == status);
+            }
+            return Json(new { data=objBookings });
+        }
+
+        #endregion
     }
 }
