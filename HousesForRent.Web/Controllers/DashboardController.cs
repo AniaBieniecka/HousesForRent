@@ -53,6 +53,20 @@ namespace HousesForRent.Web.Controllers
             return Json(radialBarChartVM);
         }
 
+        public async Task<IActionResult> GetTotalIncomeChartData()
+        {
+            var totalBookings = _unitOfWork.Booking.GetAll(u => u.Status != SD.StatusPending || u.Status == SD.StatusCancelled);
+
+            double sumByCurrentMonth = totalBookings.Where(u => u.BookingDate >= currentMonthStartDate &&
+            u.BookingDate <= DateTime.Now).Sum(u => u.Cost);
+
+            double sumByPreviousMonth = totalBookings.Where(u => u.BookingDate >= previousMonthStartDate &&
+            u.BookingDate <= currentMonthStartDate).Sum(u => u.Cost);
+
+            var radialBarChartVM = GetRadialChartViewModel(Convert.ToInt32(totalBookings.Sum(u => u.Cost)), sumByCurrentMonth, sumByPreviousMonth);
+
+            return Json(radialBarChartVM);
+        }
         private static RadialBarChartVM GetRadialChartViewModel(int totalCount, double countByCurrentMonth, double countByPreviousMonth)
         {
             RadialBarChartVM radialBarChartVM = new();
