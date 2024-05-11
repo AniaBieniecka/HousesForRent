@@ -67,6 +67,23 @@ namespace HousesForRent.Web.Controllers
 
             return Json(radialBarChartVM);
         }
+
+        public async Task<IActionResult> GetCustomerBookingPieChartData()
+        {
+            var totalBookings = _unitOfWork.Booking.GetAll(u => u.BookingDate >=DateTime.Now.AddDays(-30) && 
+            (u.Status != SD.StatusPending || u.Status == SD.StatusCancelled));
+
+            var customerWithOneBookingCount = totalBookings.GroupBy(u => u.UserId).Where(x => x.Count() == 1).Count();
+            var customerWithMoreBookingsCount = totalBookings.Count() - customerWithOneBookingCount;
+
+            PieChartVM pieChartVM = new()
+            {
+                Series = new int[] { customerWithOneBookingCount, customerWithMoreBookingsCount },
+                Labels =  new string[] {"New customers", "Returning customers"}
+            };
+
+            return Json(pieChartVM);
+        }
         private static RadialBarChartVM GetRadialChartViewModel(int totalCount, double countByCurrentMonth, double countByPreviousMonth)
         {
             RadialBarChartVM radialBarChartVM = new();
