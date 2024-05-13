@@ -6,7 +6,7 @@
     </div>
     <div class="row">
         <div class="col-md-6 col-xl-4">
-            <div class="card">
+            <div class="card mt-3">
                 <div class="card-body pb-0">
                     <div class="float-end mt-3 mb-0">
                         <div id="totalBookingRadialChart" data-colors='["--bs-success"]'></div>
@@ -28,7 +28,7 @@
 
         </div>
         <div class="col-md-6 col-xl-4">
-            <div class="card">
+            <div class="card mt-3">
                 <div class="card-body pb-0">
                     <div class="float-end mt-3 mb-0">
                         <div id="totalUserRadialChart" data-colors='["--bs-warning"]'></div>
@@ -50,7 +50,7 @@
 
         </div>
         <div class="col-md-6 col-xl-4">
-            <div class="card">
+            <div class="card mt-3">
                 <div class="card-body pb-0">
                     <div class="float-end mt-3 mb-0">
                         <div id="totalIncomeRadialChart" data-colors='["--bs-info"]'></div>
@@ -71,9 +71,24 @@
             </div>
 
         </div>
-        <div class="col-md-12 col-xl-4">
-            <div class="card">
+        <div class="col-md-12 col-xl-8">
+            <div class="card mt-3">
                 <div class="card-body pb-0">
+                    <p class="text-muted">New customers and bookings:</p>
+                    <div id="newCustomerAndBookingLineChart" data-colors='["--bs-warning","--bs-success"]'>
+                    </div>
+                    <div class="justify-content-center text-center chart-spinner" style="display:none">
+                        <div class="spinner-border text-secondary" role="status">
+                            <span class="visually-hidden">Loading</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-12 col-xl-4">
+            <div class="card mt-3">
+                <div class="card-body pb-0 ">
                     <p class="text-muted">Customer bookings:</p>
                     <div id="customerBookingPieChart" data-colors='["--bs-warning","--bs-success"]'>
                     </div>
@@ -95,4 +110,5 @@
     <script src="~/js/dashboard/getTotalUserChart.js"></script>
     <script src="~/js/dashboard/getTotalIncomeChart.js"></script>
     <script src="~/js/dashboard/getCustomerBookingPieChart.js"></script>
+    <script src="~/js/dashboard/getCustomerAndBookingLineChart.js"></script>
 }
