@@ -1,10 +1,13 @@
 ﻿using HousesForRent.Application.Common.Interfaces;
+using HousesForRent.Application.Common.Utility;
 using HousesForRent.Domain.Entities;
 using HousesForRent.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography.Xml;
 
 namespace HousesForRent.Web.Controllers
 {
@@ -127,7 +130,7 @@ namespace HousesForRent.Web.Controllers
                 _unitOfWork.House.Update(houseVM.House);
 
                 // updating HouseAmenity
-                var existingAmenityIdList = _unitOfWork.HouseAmenity.GetAll(u => u.HouseId == houseVM.House.Id).Select(u=>u.AmenityId).ToList();
+                var existingAmenityIdList = _unitOfWork.HouseAmenity.GetAll(u => u.HouseId == houseVM.House.Id).Select(u => u.AmenityId).ToList();
                 var selectedAmenityIdList = amenityId;
 
                 var amenitiesToRemove = existingAmenityIdList.Except(selectedAmenityIdList);
@@ -137,7 +140,7 @@ namespace HousesForRent.Web.Controllers
                     var houseAmenityToRemove = _unitOfWork.HouseAmenity.Get(u => u.AmenityId == item && u.HouseId == houseVM.House.Id);
                     _unitOfWork.HouseAmenity.Remove(houseAmenityToRemove);
                 }
-                
+
                 var amenitiesToAdd = selectedAmenityIdList.Except(existingAmenityIdList);
 
                 foreach (var item in amenitiesToAdd)
@@ -203,5 +206,30 @@ namespace HousesForRent.Web.Controllers
                 TempData["error"] = "The house wasn't deleted successfully";
             return View();
         }
+
+        public IActionResult CheckAvailability()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> GetCalendarBookingData()
+        {
+            var resourceList = _unitOfWork.House.GetAll().Select(x => new { id = x.Id, title = x.Name }).ToList();
+
+            var eventList = _unitOfWork.Booking.GetAll()
+            .Select(x => new { id = x.Id, resourceId = x.HouseId, title = x.House.Name + ", booking Id: " + x.Id, start = x.CheckInDate, end = x.CheckOutDate })
+            .ToList();
+
+            var bookingData = new Dictionary<string, object>
+            {
+                { "resources", resourceList },
+
+                { "events", eventList }
+            };
+
+            return Json(bookingData);
+        }
+
+
     }
 }

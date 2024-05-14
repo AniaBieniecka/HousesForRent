@@ -1,0 +1,32 @@
+﻿
+<div class="row justify-content-md-center">
+
+    <div class="card bg-light py-2">
+
+        <div class="row px-2 py-3">
+            <div id='calendar'></div>
+        </div>
+        <div class="row">
+            <div class="col">
+
+                <a asp-controller="House" asp-action="Index" class="btn btn-primary w-100 m-1">
+                    Go to house list
+                </a>
+            </div>
+            <div class="col">
+                <a asp-controller="Booking" asp-action="Index" class="btn btn-primary w-100 m-1">
+                    Go to booking list
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    @section Scripts {
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.11/index.min.js" integrity="sha512-xCMh+IX6X2jqIgak2DBvsP6DNPne/t52lMbAUJSjr3+trFn14zlaryZlBcXbHKw8SbrpS0n3zlqSVmZPITRDSQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="~/js/house/displayAvailabilityInCalendar.js"></script>
+
+    }
