@@ -1,22 +1,26 @@
 ﻿@model List<House>
 
-<div class="row justify-content-md-center">
-    <div class="col-12 d-flex flex-column">
-        <div class="card bg-light py-2 w-100 vw-100">
+<div class="row">
+    <div class="col-12 ">
+        <div class="card bg-light py-2 h-auto">
             <div class="row">
-                <div class="col-md-2">
-                    <form id="resourceForm" class="p-2">
+                <div class="col-md-3">
+                    <form id="resourceForm" class="m-3">
                         <div id="resourceSelection">
-                            <p>Choose houses(max. 6):</p>
+                            <p>Choose houses:</p>
+                            @{
+                                int counter = 0;
+                            }
                             @foreach (var house in Model)
                             {
                                 <label>
-                                    <input type="checkbox" name="selectedHouses" value="@house.Id" /> @house.Name
+                                    <input type="checkbox" name="selectedHouses" value="@house.Id" @(counter < 3 ? "checked" : "") /> @house.Name
                                 </label>
                                 <br />
+                                counter++;
                             }
                         </div>
-                        <button type="button" id="submitForm" class="btn btn-primary w-100 m-1">Show in calendar</button>
+                        <button type="button" id="submitForm" class="btn btn-primary w-100 m-1 mt-3">Show in calendar</button>
                         <a asp-controller="House" asp-action="Index" class="btn btn-outline-primary w-100 m-1">
                             Go to house list
                         </a>
@@ -25,16 +29,16 @@
                         </a>
                     </form>
                 </div>
-                <div class="col-md-10">
+                <div class="col-md-9">
                     <div class="row px-2 py-3">
-                        <div id='calendar'class="w-75"></div>
+                        <div id='calendar'></div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 </div>
 
-</div>
 
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.11/index.min.js" integrity="sha512-xCMh+IX6X2jqIgak2DBvsP6DNPne/t52lMbAUJSjr3+trFn14zlaryZlBcXbHKw8SbrpS0n3zlqSVmZPITRDSQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

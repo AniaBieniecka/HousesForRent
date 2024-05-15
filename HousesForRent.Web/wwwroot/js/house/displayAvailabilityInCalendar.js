@@ -1,9 +1,16 @@
 ﻿
 $(document).ready(function () {
 
+    var selectedHouses = [];
+    // Pobiera id zaznaczonych domów z formularza:
+    $('input[name="selectedHouses"]:checked').each(function () {
+        selectedHouses.push($(this).val());
+    });
+    loadBookingData(selectedHouses);
+
+    //po kliknięciu i przesłaniu formularza ponowne załadowanie kalendarza:
     $('#submitForm').click(function () {
-        // Pobiera wartości wybranych zasobów z formularza
-        var selectedHouses = [];
+        selectedHouses = [];
         $('input[name="selectedHouses"]:checked').each(function () {
             selectedHouses.push($(this).val());
         });
@@ -12,7 +19,7 @@ $(document).ready(function () {
 
     });
 
-    var maxSelections = 5; //maksymalna liczba wyboru
+    var maxSelections = 6; //maksymalna liczba wyboru
     var $checkboxes = $('input[name="selectedHouses"]');
     $checkboxes.change(function () {
         var numChecked = $checkboxes.filter(':checked').length;
@@ -36,13 +43,13 @@ function loadBookingData(selectedHouses) {
         success: function (data) {
 
 
-            displayCalendar("calendar", data);
+            displayCalendar("calendar", data, selectedHouses);
 
             $(".chart-spinner").hide();
         }
     })
 }
-function displayCalendar(id, data) {
+function displayCalendar(id, data, selectedHouses) {
 
     var $calendar = $('#calendar');
 
@@ -50,24 +57,40 @@ function displayCalendar(id, data) {
         $calendar.fullCalendar('destroy');
     }
 
+    //Przypisanie kolorów do wybranych domów (selectedHouses) w houseColorMap
+    var houseColorMap = {};
+    for (var i = 0; i < selectedHouses.length; i++) {
+        var houseId = selectedHouses[i];
+        var colorIndex = i % Object.keys(resourceColors).length; 
+        var color = resourceColors[colorIndex + 1]; // Pobranie koloru z resourceColors
+        houseColorMap[houseId] = color;
+    }
+
     $('#calendar').fullCalendar({
         timeZone: 'UTC',
         initialView: 'dayGridMonth',
         events: data,
-        outerWidth: "80%",
         eventRender: function (event, element) {
-            if (event.resourceId && resourceColors[event.resourceId]) {
-                element.css('background-color', resourceColors[event.resourceId]);
-            } 
+            if (event.resourceId) {
+                var color = houseColorMap[event.resourceId]; 
+                if (color) {
+                    element.css('background-color', color);
+                } else {
+                    element.css('background-color', 'grey');
+                }
+            }
         }
     });
-
 }
 
+//zestaw kolorów
 var resourceColors = {
-    '1': 'red',
-    '2': 'blue',
-    '3': 'green',
+    '1': '#4682B4',
+    '2': '#2E8B57',
+    '3': '#708090',
+    '4': '#FFA500',
+    '5': '#9932CC',
+    '6': '#FF69B4',
 };
 
 
