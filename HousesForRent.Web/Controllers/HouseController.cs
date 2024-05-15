@@ -4,6 +4,7 @@ using HousesForRent.Domain.Entities;
 using HousesForRent.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -207,27 +208,40 @@ namespace HousesForRent.Web.Controllers
             return View();
         }
 
+        [HttpGet]
         public IActionResult CheckAvailability()
         {
-            return View();
+            var houseList = _unitOfWork.House.GetAll();
+            return View(houseList);
         }
 
-        public async Task<IActionResult> GetCalendarBookingData()
+        [HttpGet]
+        public async Task<IActionResult> GetCalendarBookingData(string? selectedHouses)
         {
-            var resourceList = _unitOfWork.House.GetAll().Select(x => new { id = x.Id, title = x.Name }).ToList();
+            List<int> houseIdList = new List<int>();
 
-            var eventList = _unitOfWork.Booking.GetAll()
+            if (selectedHouses is not null)
+            {
+                var selectedResourceArray = JsonConvert.DeserializeObject<string[]>(selectedHouses);
+                houseIdList = selectedResourceArray.Select(s => Convert.ToInt32(s)).ToList();
+
+            }
+            else houseIdList = _unitOfWork.House.GetAll().Select(x => x.Id).Take(6).ToList();
+
+            IList<Booking> bookingList = new List<Booking>();
+
+            foreach (var id in houseIdList)
+            {
+                var booking = _unitOfWork.Booking.GetAll(u => u.HouseId == id, includeProperties: "House");
+
+                bookingList = bookingList.Concat(booking).ToList();
+            }
+
+            var eventList = bookingList
             .Select(x => new { id = x.Id, resourceId = x.HouseId, title = x.House.Name + ", booking Id: " + x.Id, start = x.CheckInDate, end = x.CheckOutDate })
             .ToList();
 
-            var bookingData = new Dictionary<string, object>
-            {
-                { "resources", resourceList },
-
-                { "events", eventList }
-            };
-
-            return Json(bookingData);
+            return Json(eventList);
         }
 
 
