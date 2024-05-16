@@ -40,7 +40,7 @@
 
                     <div class="row p3">
                         <div class="form-floating py-2 col-12 col-md-6">
-                            <input asp-for="@Model.House." disabled class="form-control border shadow" />
+                            <input asp-for="@Model.House.Price" disabled class="form-control border shadow" />
                             <label asp-for="@Model.House.Price" class="m-2"></label>
                         </div>
                         <div class="form-floating py-2 col-12 col-md-6">
@@ -116,7 +116,7 @@
     @if (!string.IsNullOrEmpty(@Model.House.ImageUrl))
     {
         <div class="col-lg-3 my-2">
-            <img src="@@Model.House.ImageUrl" width="100%" />
+            <img src="@Model.House.ImageUrl" width="100%" />
         </div>
     }
 </div>

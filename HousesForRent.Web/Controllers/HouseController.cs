@@ -1,10 +1,14 @@
 ﻿using HousesForRent.Application.Common.Interfaces;
+using HousesForRent.Application.Common.Utility;
 using HousesForRent.Domain.Entities;
 using HousesForRent.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography.Xml;
 
 namespace HousesForRent.Web.Controllers
 {
@@ -127,7 +131,7 @@ namespace HousesForRent.Web.Controllers
                 _unitOfWork.House.Update(houseVM.House);
 
                 // updating HouseAmenity
-                var existingAmenityIdList = _unitOfWork.HouseAmenity.GetAll(u => u.HouseId == houseVM.House.Id).Select(u=>u.AmenityId).ToList();
+                var existingAmenityIdList = _unitOfWork.HouseAmenity.GetAll(u => u.HouseId == houseVM.House.Id).Select(u => u.AmenityId).ToList();
                 var selectedAmenityIdList = amenityId;
 
                 var amenitiesToRemove = existingAmenityIdList.Except(selectedAmenityIdList);
@@ -137,7 +141,7 @@ namespace HousesForRent.Web.Controllers
                     var houseAmenityToRemove = _unitOfWork.HouseAmenity.Get(u => u.AmenityId == item && u.HouseId == houseVM.House.Id);
                     _unitOfWork.HouseAmenity.Remove(houseAmenityToRemove);
                 }
-                
+
                 var amenitiesToAdd = selectedAmenityIdList.Except(existingAmenityIdList);
 
                 foreach (var item in amenitiesToAdd)
@@ -203,5 +207,43 @@ namespace HousesForRent.Web.Controllers
                 TempData["error"] = "The house wasn't deleted successfully";
             return View();
         }
+
+        [HttpGet]
+        public IActionResult CheckAvailability()
+        {
+            var houseList = _unitOfWork.House.GetAll();
+            return View(houseList);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCalendarBookingData(string? selectedHouses)
+        {
+            List<int> houseIdList = new List<int>();
+
+            if (selectedHouses is not null)
+            {
+                var selectedResourceArray = JsonConvert.DeserializeObject<string[]>(selectedHouses);
+                houseIdList = selectedResourceArray.Select(s => Convert.ToInt32(s)).ToList();
+
+            }
+            else houseIdList = _unitOfWork.House.GetAll().Select(x => x.Id).Take(6).ToList();
+
+            IList<Booking> bookingList = new List<Booking>();
+
+            foreach (var id in houseIdList)
+            {
+                var booking = _unitOfWork.Booking.GetAll(u => u.HouseId == id && u.Status != SD.StatusCancelled , includeProperties: "House");
+
+                bookingList = bookingList.Concat(booking).ToList();
+            }
+
+            var eventList = bookingList
+            .Select(x => new { id = x.Id, resourceId = x.HouseId, title = x.House.Name + ", booking Id: " + x.Id, start = x.CheckInDate, end = x.CheckOutDate })
+            .ToList();
+
+            return Json(eventList);
+        }
+
+
     }
 }

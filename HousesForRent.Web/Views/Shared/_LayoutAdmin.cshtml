@@ -7,13 +7,15 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/HousesForRent.Web.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="//cdn.datatables.net/2.0.5/css/dataTables.dataTables.min.css"
+    <link rel="stylesheet" href="//cdn.datatables.net/2.0.5/css/dataTables.dataTables.min.css"/>
     <link rel="stylesheet" href="~/css/apexcharts.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.css" />
 </head>
 <body>
     <header>
+
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-light border-bottom box-shadow mb-3">
             <div class="container-fluid d-flex justify-content-between">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Houses For Rent</a>
@@ -31,37 +33,43 @@
                 <div class="position-static pt-3">
                     <ul class="navbar-nav ">
                         <li>
-                            <div class="text-muted small fw-bold text-uppercase px-3">
+                            <div class="text-muted  fw-bold text-uppercase p-3">
                                 Menu
                             </div>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Dashboard" asp-action="Index">
-                                <i class="bi bi-speedometer2"></i>
+                                <i class="bi bi-speedometer2 mx-2"></i>
                                 Dashboard
                             </a>
                         </li>
                         <li>
-                            <div class="text-muted small fw-bold text-uppercase px-3">
+                            <div class="text-muted fw-bold text-uppercase p-3">
                                 Content management
                             </div>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="House" asp-action="Index">
-                                <i class="bi bi-house-door"></i>
+                                <i class="bi bi-house-door mx-2"></i>
                                 House
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Amenity" asp-action="Index">
-                                <i class="bi bi-folder-plus"></i>
+                                <i class="bi bi-folder-plus mx-2"></i>
                                 Amenity
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Booking" asp-action="Index">
-                                <i class="bi bi-journal-check"></i>
+                                <i class="bi bi-journal-check mx-2"></i>
                                 Booking
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="House" asp-action="CheckAvailability">
+                                <i class="bi bi-calendar3 mx-2"></i>
+                                Availability in calendar
                             </a>
                         </li>
                     </ul>
@@ -91,6 +99,10 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="//cdn.datatables.net/2.0.5/js/dataTables.min.js" asp-append-version="true"></script>
     <script src="~/js/apexcharts.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

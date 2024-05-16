@@ -17,14 +17,14 @@ function loadDataTable(status) {
             url: '/booking/getall?status=' + status,
         },
         "columns": [
-            { data: 'id', width: "5%" },
-            { data: 'userName', width: "10%" },
-            { data: 'phone', width: "10%" },
-            { data: 'userEmail', width: "15%" },
-            { data: 'status', width: "10%" },
-            { data: 'checkInDate', width: "12%" },
-            { data: 'nightsQty', width: "5%" },
-            { data: 'cost', width: "5%" },
+            { data: 'id' },
+            { data: 'house.name' },
+            { data: 'userName' },
+            { data: 'phone' },
+            { data: 'status' },
+            { data: 'checkInDate' },
+            { data: 'nightsQty' },
+            { data: 'cost' },
             {
                 data: 'id',
                 "render": function (data) {
