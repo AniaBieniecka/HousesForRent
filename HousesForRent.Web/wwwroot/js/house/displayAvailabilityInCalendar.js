@@ -61,7 +61,7 @@ function displayCalendar(id, data, selectedHouses) {
     var houseColorMap = {};
     for (var i = 0; i < selectedHouses.length; i++) {
         var houseId = selectedHouses[i];
-        var colorIndex = i % Object.keys(resourceColors).length; 
+        var colorIndex = i % Object.keys(resourceColors).length;
         var color = resourceColors[colorIndex + 1]; // Pobranie koloru z resourceColors
         houseColorMap[houseId] = color;
     }
@@ -72,13 +72,18 @@ function displayCalendar(id, data, selectedHouses) {
         events: data,
         eventRender: function (event, element) {
             if (event.resourceId) {
-                var color = houseColorMap[event.resourceId]; 
+                var color = houseColorMap[event.resourceId];
                 if (color) {
                     element.css('background-color', color);
                 } else {
                     element.css('background-color', 'grey');
                 }
             }
+        },
+
+        eventClick: function (info) {
+            var eventId = info.id;
+            window.location.href = '/booking/bookingDetails?bookingId=' + eventId;
         }
     });
 }
