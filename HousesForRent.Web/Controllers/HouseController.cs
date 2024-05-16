@@ -232,7 +232,7 @@ namespace HousesForRent.Web.Controllers
 
             foreach (var id in houseIdList)
             {
-                var booking = _unitOfWork.Booking.GetAll(u => u.HouseId == id, includeProperties: "House");
+                var booking = _unitOfWork.Booking.GetAll(u => u.HouseId == id && u.Status != SD.StatusCancelled , includeProperties: "House");
 
                 bookingList = bookingList.Concat(booking).ToList();
             }
