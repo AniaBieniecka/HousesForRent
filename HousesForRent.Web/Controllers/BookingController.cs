@@ -9,6 +9,12 @@ using Microsoft.IdentityModel.Tokens;
 using Stripe;
 using Stripe.Checkout;
 using Stripe.Issuing;
+using Syncfusion.DocIO;
+using Syncfusion.DocIO.DLS;
+using Syncfusion.DocIORenderer;
+using Syncfusion.Drawing;
+using System.ComponentModel;
+using System.Drawing;
 using System.Security.Claims;
 
 namespace HousesForRent.Web.Controllers
@@ -16,9 +22,11 @@ namespace HousesForRent.Web.Controllers
     public class BookingController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public BookingController(IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public BookingController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
         [Authorize]
         public IActionResult Index()
@@ -140,6 +148,61 @@ namespace HousesForRent.Web.Controllers
         {
             Booking bookingFromDB = _unitOfWork.Booking.Get(u => u.Id == bookingId, includeProperties: "User,House");
             return View(bookingFromDB);
+        }
+        [Authorize]
+        [HttpPost]
+        public IActionResult CreateInvoice (int bookingId)
+        {
+            string basePath = _webHostEnvironment.WebRootPath;
+
+            WordDocument document = new WordDocument();
+            string dataPath = basePath + @"/exports/BookingDetails.docx";
+            using FileStream fileStream = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            document.Open(fileStream, FormatType.Automatic);
+
+            Booking booking = _unitOfWork.Booking.Get(u => u.Id == bookingId, includeProperties: "User,House");
+            TextSelection textSelection = document.Find("xx_customer_name", false, true);
+            WTextRange textRange = textSelection.GetAsOneRange();
+            textRange.Text = booking.UserName;
+
+            textSelection = document.Find("XX_BOOKING_NUMBER ", false, true);
+            textRange = textSelection.GetAsOneRange();
+            textRange.Text ="BOOKING ID: " + booking.Id.ToString();
+
+            textSelection = document.Find("XX_BOOKING_DATE ", false, true);
+            textRange = textSelection.GetAsOneRange();
+            textRange.Text = "BOOKING DATE: " + booking.BookingDate.ToShortDateString();
+
+            textSelection = document.Find("xx_customer_phone", false, true);
+            textRange = textSelection.GetAsOneRange();
+            textRange.Text = booking.Phone;
+
+            textSelection = document.Find("xx_customer_email", false, true);
+            textRange = textSelection.GetAsOneRange();
+            textRange.Text = booking.UserEmail;
+
+            textSelection = document.Find("xx_payment_date", false, true);
+            textRange = textSelection.GetAsOneRange();
+            textRange.Text = booking.PaymentDate.ToShortDateString();
+
+            textSelection = document.Find("xx_checkin_date", false, true);
+            textRange = textSelection.GetAsOneRange();
+            textRange.Text = booking.CheckInDate.ToShortDateString();
+
+            textSelection = document.Find("xx_checkout_date", false, true);
+            textRange = textSelection.GetAsOneRange();
+            textRange.Text = booking.CheckOutDate.ToShortDateString();
+
+            textSelection = document.Find("xx_booking_cost", false, true);
+            textRange = textSelection.GetAsOneRange();
+            textRange.Text = booking.Cost.ToString("c");
+
+            using DocIORenderer renderer = new();
+            MemoryStream stream = new();
+            document.Save(stream, FormatType.Docx);
+            stream.Position = 0;
+
+            return File(stream, "application/docx", "BookingDetails.docx");
         }
 
         [HttpPost]

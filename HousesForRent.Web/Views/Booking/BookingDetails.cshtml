@@ -20,6 +20,17 @@
                 </h4>
             </div>
 
+            <hr/>
+            <form method="post">
+                <div class="row pt-1">
+                    <div class="col-12 text-end">
+                        <button asp-action="CreateInvoice" asp-route-bookingId="@Model.Id" type="submit" class="btn btn-primary">
+                            <i class="bi bi-file-earmark-word-fill"></i>
+                            Create invoice
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
         <div class="col-12 col-lg-6 p-3 border">
             <form method="post">
