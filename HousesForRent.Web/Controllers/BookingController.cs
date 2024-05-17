@@ -13,8 +13,10 @@ using Syncfusion.DocIO;
 using Syncfusion.DocIO.DLS;
 using Syncfusion.DocIORenderer;
 using Syncfusion.Drawing;
+using Syncfusion.Pdf;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Security.Claims;
 
 namespace HousesForRent.Web.Controllers
@@ -151,7 +153,7 @@ namespace HousesForRent.Web.Controllers
         }
         [Authorize]
         [HttpPost]
-        public IActionResult CreateInvoice (int bookingId)
+        public IActionResult CreateInvoice (int bookingId, string downloadType)
         {
             string basePath = _webHostEnvironment.WebRootPath;
 
@@ -199,10 +201,23 @@ namespace HousesForRent.Web.Controllers
 
             using DocIORenderer renderer = new();
             MemoryStream stream = new();
+
+            if (downloadType == "word")
+            {
             document.Save(stream, FormatType.Docx);
             stream.Position = 0;
-
             return File(stream, "application/docx", "BookingDetails.docx");
+            }
+
+            else
+            {
+                PdfDocument pdfDocument = renderer.ConvertToPDF(document);
+                pdfDocument.Save(stream);
+                stream.Position = 0;
+                return File(stream, "application/docx", "BookingDetails.pdf");
+
+            }
+
         }
 
         [HttpPost]

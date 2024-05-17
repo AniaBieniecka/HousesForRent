@@ -20,12 +20,18 @@
                 </h4>
             </div>
 
-            <hr/>
+            <hr />
             <form method="post">
                 <div class="row pt-1">
                     <div class="col-12 text-end">
-                        <button asp-action="CreateInvoice" asp-route-bookingId="@Model.Id" type="submit" class="btn btn-primary">
-                            <i class="bi bi-file-earmark-word-fill"></i>
+                        <button asp-action="CreateInvoice" asp-route-bookingId="@Model.Id" type="submit" class="btn btn-primary"
+                                asp-route-downloadType="word">
+                            <i class="bi bi-file-earmark-word"></i>
+                            Create invoice
+                        </button>
+                        <button asp-action="CreateInvoice" asp-route-bookingId="@Model.Id" type="submit" class="btn btn-primary"
+                                asp-route-downloadType="pdf">
+                            <i class="bi bi-filetype-pdf"></i>
                             Create invoice
                         </button>
                     </div>
@@ -94,7 +100,7 @@
                     <div class="form-group p-2 col-6">
                         <label asp-for="CheckOutDate"></label>
                         <input asp-for="CheckOutDate" disabled class="form-control" />
-                        <span asp-validation-for="CheckOutDate"  class="text-danger"></span>
+                        <span asp-validation-for="CheckOutDate" class="text-danger"></span>
                     </div>
                     <div class="form-group p-2 col-6">
                         <label asp-for="ActualCheckOutDate"></label>
@@ -110,7 +116,7 @@
                         <div class="form-group p-2 col-6">
                             <label asp-for="StripeSessionId"></label>
                             <input asp-for="StripeSessionId" disabled class="form-control" />
-                        </div>                        
+                        </div>
                         <div class="form-group p-2 col-6">
                             <label asp-for="PaymentDate"></label>
                             <input asp-for="PaymentDate" disabled class="form-control" />
@@ -128,7 +134,7 @@
                     {
                         if (Model.Status == SD.StatusApproved)
                         {
-                         <button type="submit" asp-action="CheckIn" class="btn btn-primary form-control">Check in</button>
+                            <button type="submit" asp-action="CheckIn" class="btn btn-primary form-control">Check in</button>
 
                         }
                         if (Model.Status == SD.StatusCheckedIn)
