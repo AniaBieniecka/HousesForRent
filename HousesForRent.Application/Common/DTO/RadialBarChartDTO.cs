@@ -1,6 +1,6 @@
 ﻿namespace HousesForRent.Web.ViewModels
 {
-    public class RadialBarChartVM
+    public class RadialBarChartDTO
     {
         public decimal TotalCount { get; set; }
         public decimal CountCurrentMonth { get; set; }

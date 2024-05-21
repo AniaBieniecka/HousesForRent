@@ -1,4 +1,6 @@
 using HousesForRent.Application.Common.Interfaces;
+using HousesForRent.Application.Services.Implementation;
+using HousesForRent.Application.Services.Interface;
 using HousesForRent.Domain.Entities;
 using HousesForRent.Infrastructure.Data;
 using HousesForRent.Infrastructure.Repository;
@@ -14,6 +16,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(option =>
 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
