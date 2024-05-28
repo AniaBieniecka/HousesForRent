@@ -1,6 +1,8 @@
 ﻿using HousesForRent.Application.Common.Interfaces;
 using HousesForRent.Application.Common.Utility;
+using HousesForRent.Application.Services.Interface;
 using HousesForRent.Domain.Entities;
+using HousesForRent.Infrastructure.Repository;
 using HousesForRent.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
@@ -14,17 +16,20 @@ namespace HousesForRent.Web.Controllers
 {
     public class HouseController : Controller
     {
+        private readonly IHouseService _houseService;
+        private readonly IAmenityService _amenityService;
+        private readonly IHouseAmenityService _houseAmenityService;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IWebHostEnvironment _webHostEnviroment;
-
-        public HouseController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnviroment)
+        public HouseController(IHouseService houseService, IAmenityService amenityService, IHouseAmenityService houseAmenityService, IUnitOfWork unitOfWork)
         {
+            _houseService = houseService;
+            _amenityService = amenityService;
+            _houseAmenityService = houseAmenityService;
             _unitOfWork = unitOfWork;
-            _webHostEnviroment = webHostEnviroment;
         }
         public IActionResult Index()
         {
-            var houses = _unitOfWork.House.GetAll().ToList();
+            var houses = _houseService.GetAllHouses();
             return View(houses);
         }
 
@@ -33,7 +38,7 @@ namespace HousesForRent.Web.Controllers
         {
             HouseVM houseVM = new()
             {
-                AmenityList = _unitOfWork.Amenity.GetAll().ToList()
+                AmenityList = _amenityService.GetAllAmenities().ToList(),
             };
 
             return View(houseVM);
@@ -47,21 +52,7 @@ namespace HousesForRent.Web.Controllers
             }
             if (ModelState.IsValid)
             {
-                if (house.Image != null)
-                {
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(house.Image.FileName);
-                    string imagePath = Path.Combine(_webHostEnviroment.WebRootPath, @"images\House");
-
-                    using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
-                        house.Image.CopyTo(fileStream);
-
-                    house.ImageUrl = @"\images\House\" + fileName;
-                }
-
-                house.Occupancy = house.SingleBedQuantity + house.DoubleBedQuantity * 2;
-
-                _unitOfWork.House.Add(house);
-                _unitOfWork.House.Save();
+                _houseService.CreateHouse(house);
 
                 if (amenityId is not null)
                 {
@@ -70,8 +61,8 @@ namespace HousesForRent.Web.Controllers
                         HouseAmenity houseAmenity = new HouseAmenity();
                         houseAmenity.HouseId = house.Id;
                         houseAmenity.AmenityId = id;
-                        _unitOfWork.HouseAmenity.Add(houseAmenity);
-                        _unitOfWork.House.Save();
+
+                        _houseAmenityService.CreateHouseAmenity(houseAmenity);
                     }
                 }
                 TempData["success"] = "The house was created successfully";
@@ -83,14 +74,13 @@ namespace HousesForRent.Web.Controllers
 
         public IActionResult Update(int id)
         {
-            var house = _unitOfWork.House.Get(u => u.Id == id);
+            var house = _houseService.GetHouse(id);
 
             HouseVM vm = new()
             {
                 House = house,
-                AmenityList = _unitOfWork.Amenity.GetAll().ToList(),
-                HouseAmenitiesIdList = _unitOfWork.HouseAmenity.GetAll(u => u.HouseId == id).Select(u => u.AmenityId).ToList()
-
+                AmenityList = _amenityService.GetAllAmenities().ToList(),
+                HouseAmenitiesIdList = _houseAmenityService.GetAllHouseAmenities(id).Select(u => u.AmenityId).ToList()
             };
 
             if (house is not null)
@@ -108,72 +98,52 @@ namespace HousesForRent.Web.Controllers
             }
             if (ModelState.IsValid)
             {
-                if (houseVM.House.Image != null)
-                {
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(houseVM.House.Image.FileName);
-                    string imagePath = Path.Combine(_webHostEnviroment.WebRootPath, @"images\House");
-
-                    if (!string.IsNullOrEmpty(houseVM.House.ImageUrl))
-                    {
-                        var oldImagePath = Path.Combine(_webHostEnviroment.WebRootPath, houseVM.House.ImageUrl.TrimStart('\\'));
-                        if (System.IO.File.Exists(oldImagePath))
-                        {
-                            System.IO.File.Delete(oldImagePath);
-                        }
-                    }
-
-                    using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
-                        houseVM.House.Image.CopyTo(fileStream);
-
-                    houseVM.House.ImageUrl = @"\images\House\" + fileName;
-                }
-
-                _unitOfWork.House.Update(houseVM.House);
+                _houseService.UpdateHouse(houseVM.House);
 
                 // updating HouseAmenity
-                var existingAmenityIdList = _unitOfWork.HouseAmenity.GetAll(u => u.HouseId == houseVM.House.Id).Select(u => u.AmenityId).ToList();
+                var existingAmenityIdList = _houseAmenityService.GetAllHouseAmenities(houseVM.House.Id).Select(u => u.AmenityId).ToList();
                 var selectedAmenityIdList = amenityId;
 
                 var amenitiesToRemove = existingAmenityIdList.Except(selectedAmenityIdList);
 
-                foreach (var item in amenitiesToRemove)
+                foreach (var amenityToRemoveId in amenitiesToRemove)
                 {
-                    var houseAmenityToRemove = _unitOfWork.HouseAmenity.Get(u => u.AmenityId == item && u.HouseId == houseVM.House.Id);
-                    _unitOfWork.HouseAmenity.Remove(houseAmenityToRemove);
+                    var houseAmenityToRemove = _houseAmenityService.GetHouseAmenity(houseVM.House.Id, amenityToRemoveId);
+                    _houseAmenityService.DeleteHouseAmenity(houseAmenityToRemove.Id);
                 }
 
                 var amenitiesToAdd = selectedAmenityIdList.Except(existingAmenityIdList);
 
-                foreach (var item in amenitiesToAdd)
+                foreach (var amenityToAddId in amenitiesToAdd)
                 {
                     HouseAmenity houseAmenityToAdd = new()
                     {
-                        AmenityId = item,
+                        AmenityId = amenityToAddId,
                         HouseId = houseVM.House.Id
                     };
-                    _unitOfWork.HouseAmenity.Add(houseAmenityToAdd);
-                }
 
-                _unitOfWork.House.Save();
+                    _houseAmenityService.CreateHouseAmenity(houseAmenityToAdd);
+                }
                 TempData["success"] = "The house was updated successfully";
                 return RedirectToAction("Index");
-
             }
+
             else
                 TempData["error"] = "The house wasn't deleted successfully";
 
             return View(houseVM);
+
         }
 
         public IActionResult Delete(int id)
         {
-            var house = _unitOfWork.House.Get(u => u.Id == id);
+            var house = _houseService.GetHouse(id);
 
             HouseVM vm = new()
             {
                 House = house,
-                AmenityList = _unitOfWork.Amenity.GetAll().ToList(),
-                HouseAmenitiesIdList = _unitOfWork.HouseAmenity.GetAll(u => u.HouseId == id).Select(u => u.AmenityId).ToList()
+                AmenityList = _amenityService.GetAllAmenities().ToList(),
+                HouseAmenitiesIdList = _houseAmenityService.GetAllHouseAmenities(id).Select(u => u.AmenityId).ToList()
 
             };
 
@@ -185,21 +155,13 @@ namespace HousesForRent.Web.Controllers
         }
         [HttpPost]
         public IActionResult Delete(HouseVM vm)
-        {
-            House? house = _unitOfWork.House.Get(u => u.Id == vm.House.Id);
+        {;
+            House? house = _houseService.GetHouse(vm.House.Id);
 
             if (house is not null)
             {
-                if (!string.IsNullOrEmpty(house.ImageUrl))
-                {
-                    var oldImagePath = Path.Combine(_webHostEnviroment.WebRootPath, house.ImageUrl.TrimStart('\\'));
-                    if (System.IO.File.Exists(oldImagePath))
-                    {
-                        System.IO.File.Delete(oldImagePath);
-                    }
-                }
-                _unitOfWork.House.Remove(house);
-                _unitOfWork.House.Save();
+                _houseService.DeleteHouse(house.Id);
+
                 TempData["success"] = "The house was deleted successfully";
                 return RedirectToAction("Index");
             }
@@ -211,7 +173,7 @@ namespace HousesForRent.Web.Controllers
         [HttpGet]
         public IActionResult CheckAvailability()
         {
-            var houseList = _unitOfWork.House.GetAll();
+            var houseList = _houseService.GetAllHouses();
             return View(houseList);
         }
 
@@ -226,13 +188,13 @@ namespace HousesForRent.Web.Controllers
                 houseIdList = selectedResourceArray.Select(s => Convert.ToInt32(s)).ToList();
 
             }
-            else houseIdList = _unitOfWork.House.GetAll().Select(x => x.Id).Take(6).ToList();
+            else houseIdList = _houseService.GetAllHouses().Select(u=>u.Id).Take(6).ToList();                   
 
             IList<Booking> bookingList = new List<Booking>();
 
             foreach (var id in houseIdList)
             {
-                var booking = _unitOfWork.Booking.GetAll(u => u.HouseId == id && u.Status != SD.StatusCancelled , includeProperties: "House");
+                var booking = _unitOfWork.Booking.GetAll(u => u.HouseId == id && u.Status != SD.StatusCancelled, includeProperties: "House");
 
                 bookingList = bookingList.Concat(booking).ToList();
             }
