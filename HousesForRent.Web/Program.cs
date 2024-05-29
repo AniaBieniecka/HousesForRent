@@ -20,6 +20,7 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IAmenityService, AmenityService>();
 builder.Services.AddScoped<IHouseService, HouseService>();
 builder.Services.AddScoped<IHouseAmenityService, HouseAmenityService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
