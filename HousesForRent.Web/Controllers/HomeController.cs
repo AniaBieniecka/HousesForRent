@@ -1,5 +1,6 @@
 using HousesForRent.Application.Common.Interfaces;
 using HousesForRent.Application.Common.Utility;
+using HousesForRent.Application.Services.Interface;
 using HousesForRent.Domain.Entities;
 using HousesForRent.Web.Models;
 using HousesForRent.Web.ViewModels;
@@ -11,19 +12,20 @@ namespace HousesForRent.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IUnitOfWork _uniUnitOfWork;
-
-        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
+        private readonly IHouseService _houseService;
+        private readonly IBookingService _bookingService;
+        public HomeController(ILogger<HomeController> logger, IHouseService houseService, IBookingService bookingService)
         {
             _logger = logger;
-            _uniUnitOfWork = unitOfWork;
+            _houseService = houseService;
+            _bookingService = bookingService;
         }
 
         public IActionResult Index()
         {
             var homeVM = new HomeVM()
             {
-                HouseList = _uniUnitOfWork.House.GetAllHouses(),
+                HouseList = _houseService.GetAllHouses(),
                 NightsQty = 1,
                 CheckInDate = DateOnly.FromDateTime(DateTime.Now),
 
@@ -34,10 +36,9 @@ namespace HousesForRent.Web.Controllers
         [HttpPost]
         public IActionResult ShowHousesByDate(HomeVM homeVM)
         {
-            homeVM.HouseList = _uniUnitOfWork.House.GetAllHouses();
-            var bookings = _uniUnitOfWork.Booking.GetAll(u => u.Status ==SD.StatusPending || 
-            u.Status== SD.StatusApproved || u.Status == SD.StatusCheckedIn).ToList();
-
+            homeVM.HouseList = _houseService.GetAllHouses();
+            var bookings = _bookingService.GetAllBookings("","Pending,Approved,CheckedIn").ToList();
+                
             foreach (var house in homeVM.HouseList)
             {
                 house.IsBooked = SD.isHouseBooked(house.Id, homeVM.CheckInDate, homeVM.NightsQty, bookings);

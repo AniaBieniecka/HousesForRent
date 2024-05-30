@@ -19,13 +19,13 @@ namespace HousesForRent.Web.Controllers
         private readonly IHouseService _houseService;
         private readonly IAmenityService _amenityService;
         private readonly IHouseAmenityService _houseAmenityService;
-        private readonly IUnitOfWork _unitOfWork;
-        public HouseController(IHouseService houseService, IAmenityService amenityService, IHouseAmenityService houseAmenityService, IUnitOfWork unitOfWork)
+        private readonly IBookingService _bookingService;
+        public HouseController(IHouseService houseService, IAmenityService amenityService, IHouseAmenityService houseAmenityService, IBookingService bookingService)
         {
             _houseService = houseService;
             _amenityService = amenityService;
             _houseAmenityService = houseAmenityService;
-            _unitOfWork = unitOfWork;
+            _bookingService = bookingService;
         }
         public IActionResult Index()
         {
@@ -194,8 +194,7 @@ namespace HousesForRent.Web.Controllers
 
             foreach (var id in houseIdList)
             {
-                var booking = _unitOfWork.Booking.GetAll(u => u.HouseId == id && u.Status != SD.StatusCancelled, includeProperties: "House");
-
+                var booking = _bookingService.GetAllBookings("", "Pending,Approved,CheckedIn,Completed,Refunded").Where(a=>a.HouseId== id).ToList();        
                 bookingList = bookingList.Concat(booking).ToList();
             }
 
