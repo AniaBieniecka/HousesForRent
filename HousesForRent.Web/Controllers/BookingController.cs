@@ -1,9 +1,11 @@
 ﻿using HousesForRent.Application.Common.Interfaces;
 using HousesForRent.Application.Common.Utility;
+using HousesForRent.Application.Services.Interface;
 using HousesForRent.Domain.Entities;
 using HousesForRent.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Stripe;
@@ -15,10 +17,14 @@ namespace HousesForRent.Web.Controllers
 {
     public class BookingController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public BookingController(IUnitOfWork unitOfWork)
+        private readonly IBookingService _bookingService;
+        private readonly IHouseService _houseService;
+        private readonly UserManager<ApplicationUser> _userManager;
+        public BookingController(IBookingService bookingService, IHouseService houseService, UserManager<ApplicationUser> userManager)
         {
-            _unitOfWork = unitOfWork;
+            _bookingService = bookingService;
+            _houseService = houseService;
+            _userManager = userManager;
         }
         [Authorize]
         public IActionResult Index()
@@ -31,14 +37,14 @@ namespace HousesForRent.Web.Controllers
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
+            var user = _userManager.FindByIdAsync(userId).GetAwaiter().GetResult();
 
             DateOnly.TryParseExact(checkInDate, "dd.MM.yyyy", null, System.Globalization.DateTimeStyles.None, out DateOnly checkInDateParsed);
 
             Booking booking = new()
             {
                 HouseId = houseId,
-                House = _unitOfWork.House.GetHouse(),
+                House = _houseService.GetHouse(houseId),
                 CheckInDate = checkInDateParsed,
                 CheckOutDate = checkInDateParsed.AddDays(nightsQty),
                 NightsQty = nightsQty,
@@ -56,16 +62,14 @@ namespace HousesForRent.Web.Controllers
         [HttpPost]
         public IActionResult ProcessBooking(Booking booking)
         {
-            var house = _unitOfWork.House.Get(u => u.Id == booking.HouseId);
+            var house = _houseService.GetHouse(booking.HouseId);
 
             booking.Cost = house.Price * booking.NightsQty;
             booking.Status = SD.StatusPending;
             booking.BookingDate = DateTime.Now;
 
-            //checking availability:
-            var bookings = _unitOfWork.Booking.GetAll(u => u.Status == SD.StatusPending ||
-            u.Status == SD.StatusApproved || u.Status == SD.StatusCheckedIn || u.HouseId == booking.HouseId).ToList();
-            house.IsBooked = SD.isHouseBooked(house.Id, booking.CheckInDate, booking.NightsQty, bookings);
+            house.IsBooked = _bookingService.IsHouseBooked(house.Id,booking.NightsQty, booking.CheckInDate);
+
             if(house.IsBooked)
             {
                 TempData["error"] = "House has just been sold out";
@@ -77,9 +81,7 @@ namespace HousesForRent.Web.Controllers
                 });
             }
 
-            _unitOfWork.Booking.Add(booking);
-            _unitOfWork.Booking.Save();
-
+            _bookingService.CreateBooking(booking);
 
             var domain = Request.Scheme + "://" + Request.Host.Value + "/";
             var options = new SessionCreateOptions
@@ -108,8 +110,7 @@ namespace HousesForRent.Web.Controllers
             var service = new SessionService();
             Session session = service.Create(options);
 
-            _unitOfWork.Booking.UpdateStripePaymentID(booking.Id, session.Id, session.PaymentIntentId);
-            _unitOfWork.Booking.Save();
+            _bookingService.UpdateStripePaymentID(booking.Id, session.Id, session.PaymentIntentId);
 
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
@@ -118,7 +119,7 @@ namespace HousesForRent.Web.Controllers
         [Authorize]
         public IActionResult BookingConfirmation(int bookingId)
         {
-            Booking bookingFromDB = _unitOfWork.Booking.Get(u=>u.Id == bookingId, includeProperties: "User,House");
+            Booking bookingFromDB = _bookingService.GetBooking(bookingId);
             if (bookingFromDB.Status == SD.StatusPending)
             {
                 //confirming if payment was successful
@@ -127,9 +128,8 @@ namespace HousesForRent.Web.Controllers
 
                 if (session.PaymentStatus == "paid")
                 {
-                    _unitOfWork.Booking.UpdateStatus(bookingFromDB.Id, SD.StatusApproved);
-                    _unitOfWork.Booking.UpdateStripePaymentID(bookingFromDB.Id, session.Id, session.PaymentIntentId);
-                    _unitOfWork.Booking.Save();
+                    _bookingService.UpdateStatus(bookingFromDB.Id, SD.StatusApproved);
+                    _bookingService.UpdateStripePaymentID(bookingFromDB.Id, session.Id, session.PaymentIntentId);
                 }
             }
             return View(bookingId);
@@ -138,7 +138,7 @@ namespace HousesForRent.Web.Controllers
         [Authorize]
         public  IActionResult BookingDetails (int bookingId)
         {
-            Booking bookingFromDB = _unitOfWork.Booking.Get(u => u.Id == bookingId, includeProperties: "User,House");
+            Booking bookingFromDB = _bookingService.GetBooking(bookingId);
             return View(bookingFromDB);
         }
 
@@ -146,8 +146,7 @@ namespace HousesForRent.Web.Controllers
         [Authorize(Roles =SD.Role_Admin)]
         public IActionResult CheckIn(Booking booking)
         {
-            _unitOfWork.Booking.UpdateStatus(booking.Id, SD.StatusCheckedIn);
-            _unitOfWork.Booking.Save();
+            _bookingService.UpdateStatus(booking.Id, SD.StatusCheckedIn);
             TempData["Success"] = "Booking updated successfully";
             return RedirectToAction(nameof(BookingDetails), new {bookingId = booking.Id});
         }
@@ -156,8 +155,7 @@ namespace HousesForRent.Web.Controllers
         [Authorize(Roles = SD.Role_Admin)]
         public IActionResult CheckOut(Booking booking)
         {
-            _unitOfWork.Booking.UpdateStatus(booking.Id, SD.StatusCompleted);
-            _unitOfWork.Booking.Save();
+            _bookingService.UpdateStatus(booking.Id, SD.StatusCompleted);
             TempData["Success"] = "Booking completed successfully";
             return RedirectToAction(nameof(BookingDetails), new { bookingId = booking.Id });
         }
@@ -166,8 +164,7 @@ namespace HousesForRent.Web.Controllers
         [Authorize(Roles = SD.Role_Admin)]
         public IActionResult Cancel(Booking booking)
         {
-            _unitOfWork.Booking.UpdateStatus(booking.Id, SD.StatusCancelled);
-            _unitOfWork.Booking.Save();
+            _bookingService.UpdateStatus(booking.Id, SD.StatusCancelled);
             TempData["Success"] = "Booking cancelled successfully";
             return RedirectToAction(nameof(BookingDetails), new { bookingId = booking.Id });
 
@@ -180,13 +177,13 @@ namespace HousesForRent.Web.Controllers
             IEnumerable<Booking> objBookings;
 
             if (User.IsInRole(SD.Role_Admin)){
-                objBookings = _unitOfWork.Booking.GetAll(includeProperties: "User,House");
+                objBookings = _bookingService.GetAllBookings();
             } else
             {
                 var claimsIdentity = (ClaimsIdentity)User.Identity;
                 var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                objBookings = _unitOfWork.Booking.GetAll(u => u.UserId == userId, includeProperties:"User,House");
+                objBookings = _bookingService.GetAllBookings(userId);
             }
             if (!string.IsNullOrEmpty(status))
             {

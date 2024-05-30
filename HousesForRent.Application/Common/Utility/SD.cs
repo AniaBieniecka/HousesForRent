@@ -1,4 +1,5 @@
 ﻿using HousesForRent.Domain.Entities;
+using HousesForRent.Web.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,5 +46,25 @@ namespace HousesForRent.Application.Common.Utility
             return false;
 
         }
+
+        public static RadialBarChartDTO GetRadialChartViewModel(int totalCount, double countByCurrentMonth, double countByPreviousMonth)
+        {
+            RadialBarChartDTO RadialBarChartDTO = new();
+
+            int increaseDecreaseRatio = 100;
+
+            if (countByPreviousMonth != 0)
+            {
+                increaseDecreaseRatio = Convert.ToInt32((countByCurrentMonth - countByPreviousMonth) / countByPreviousMonth * 100);
+            }
+
+            RadialBarChartDTO.TotalCount = totalCount;
+            RadialBarChartDTO.CountCurrentMonth = Convert.ToInt32(countByCurrentMonth);
+            RadialBarChartDTO.MonthlyChange = Convert.ToInt32(countByCurrentMonth - countByPreviousMonth);
+            RadialBarChartDTO.Series = new int[] { increaseDecreaseRatio };
+
+            return RadialBarChartDTO;
+        }
+
     }
 }
