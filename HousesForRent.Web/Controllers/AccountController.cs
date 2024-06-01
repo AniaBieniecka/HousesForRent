@@ -3,6 +3,7 @@ using HousesForRent.Application.Common.Interfaces;
 using HousesForRent.Application.Common.Utility;
 using HousesForRent.Domain.Entities;
 using HousesForRent.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -152,6 +153,30 @@ namespace HousesForRent.Web.Controllers
         public IActionResult AccessDenied()
         {
             return View();
+        }
+
+        [Authorize(Roles = SD.Role_Admin)]
+
+        public async Task<IActionResult> Index()
+        {
+            var users = _userManager.Users.ToList();
+            var userList = new List<UserVM>();
+
+            foreach (var user in users)
+            {
+                var userRoles = await _userManager.GetRolesAsync(user);
+                userList.Add(new UserVM
+                {
+                    Id = user.Id,
+                    Name = user.UserName,
+                    Email =user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    CreatedAt = user.CreatedAt,
+                    Roles = userRoles
+                });
+
+            }
+            return View(userList.ToList());
         }
     }
 }
