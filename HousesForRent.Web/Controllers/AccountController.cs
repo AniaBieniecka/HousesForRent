@@ -1,6 +1,8 @@
 ﻿using Azure.Identity;
 using HousesForRent.Application.Common.Interfaces;
 using HousesForRent.Application.Common.Utility;
+using HousesForRent.Application.Services.Implementation;
+using HousesForRent.Application.Services.Interface;
 using HousesForRent.Domain.Entities;
 using HousesForRent.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -15,13 +17,15 @@ namespace HousesForRent.Web.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IBookingService _bookingService;
         public AccountController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager, IBookingService bookingService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _bookingService = bookingService;
         }
         public IActionResult Login(string returnUrl = null)
         {
@@ -177,6 +181,12 @@ namespace HousesForRent.Web.Controllers
 
             }
             return View(userList.ToList());
+        }
+
+        public IActionResult CustomerBookings(string id)
+        {
+            var bookingList = _bookingService.GetAllBookings(id).ToList();
+            return View(bookingList);
         }
     }
 }

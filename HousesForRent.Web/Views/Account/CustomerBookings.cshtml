@@ -1,0 +1,37 @@
+﻿@model List<Booking>
+
+<div class="container">
+    <h2 class="text-center p-3">Customer bookings list</h2>
+
+    <div class="row justify-content-md-center">
+        <div class="col-lg-9">
+            <table class="table table-bordered table-hover table-dark">
+                <thead class="bg-primary text-center align-middle">
+                    <tr>
+                        <th style="width:15%">Booking Id</th>
+                        <th style="width:15%">House</th>
+                        <th style="width:15%">Check in date</th>
+                        <th style="width:15%">Check out date</th>
+                        <th style="width:15%">Cost</th>
+                        <th style="width:15%">Status</th>
+                    </tr>
+                </thead>
+
+                <tbody class="table-light">
+                    @foreach (var booking in Model)
+                    {
+                        <tr>
+                            <td>@booking.Id</td>
+                            <td>@booking.House.Name</td>
+                            <td>@booking.CheckInDate</td>
+                            <td>@booking.CheckOutDate</td>
+                            <td>@booking.Cost.ToString("c")</td>
+                            <td>@booking.Status</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

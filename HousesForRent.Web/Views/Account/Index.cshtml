@@ -4,14 +4,14 @@
     <h2 class="text-center p-3">Customer (user) list</h2>
 
     <div class="row justify-content-md-center">
-        <div class="col-lg-9">
+        <div class="col-lg-12">
             <table class="table table-bordered table-hover table-dark">
                 <thead class="bg-primary text-center align-middle">
                     <tr>
                         <th style="width:15%">Name</th>
                         <th style="width:15%">Email</th>
                         <th style="width:15%">Phone number</th>
-                        <th style="width:15%">Creation date</th>
+                        <th style="width:25%">Creation date</th>
                         <th style="width:15%">Roles</th>
                         <th style="width:15%"></th>
                     </tr>
@@ -29,10 +29,10 @@
                                 @foreach(var role in user.Roles)
                                 {
                                     @role
-
                                 }
                             </td>
                             <td>
+                                <a asp-controller="Account" asp-action="CustomerBookings" asp-route-id="@user.Id" class="btn btn-primary m-1">Check bookings</a>
                             </td>
                         </tr>
                     }
