@@ -7,8 +7,8 @@
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
         data-bs-toggle="dropdown" aria-expanded="false">Hello @UserManager.GetUserName(User)</a>
         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="nav-link text-center" asp-controller="Account" asp-action="ManageAccount">Account</a>
             <a class="nav-link text-center" asp-controller="Account" asp-action="Logout">Log out</a>
-
         </ul>
     </li>
 </ul>

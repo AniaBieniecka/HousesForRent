@@ -18,6 +18,7 @@ namespace HousesForRent.Web.ViewModels
         [Compare(nameof(Password))]
         public string ConfirmPassword { get; set; }
         [Required]
+        [Display(Name = "Name and surname")]
         public string Name { get; set; }
         [Display(Name="Phone number")]
         public string? PhoneNumber { get; set; }

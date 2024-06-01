@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Claims;
 
 namespace HousesForRent.Web.Controllers
 {
@@ -173,7 +174,7 @@ namespace HousesForRent.Web.Controllers
                 {
                     Id = user.Id,
                     Name = user.UserName,
-                    Email =user.Email,
+                    Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
                     CreatedAt = user.CreatedAt,
                     Roles = userRoles
@@ -187,6 +188,34 @@ namespace HousesForRent.Web.Controllers
         {
             var bookingList = _bookingService.GetAllBookings(id).ToList();
             return View(bookingList);
+        }
+
+        public IActionResult ManageAccount()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = _userManager.FindByIdAsync(userId).GetAwaiter().GetResult();
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ManageAccount(ApplicationUser user)
+        {
+            if (ModelState.IsValid)
+            {
+                var userFromDB = await _userManager.FindByIdAsync(user.Id);
+                userFromDB.PhoneNumber = user.PhoneNumber;
+                userFromDB.Name = user.Name;
+                await _userManager.UpdateAsync(userFromDB);
+                TempData["success"] = "The account was updated successfully";
+                return RedirectToAction("Index","Home");
+            }
+
+            else
+                TempData["error"] = "The account wasn't updated successfully";
+
+            return View(user);
         }
     }
 }
