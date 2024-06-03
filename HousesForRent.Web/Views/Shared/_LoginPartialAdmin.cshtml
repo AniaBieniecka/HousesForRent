@@ -2,12 +2,16 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
+@{
+    var user = await UserManager.GetUserAsync(User);
+}
+
 <ul class="navbar-nav d-none d-md-flex nav-login">
     <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-        data-bs-toggle="dropdown" aria-expanded="false">Hello @UserManager.GetUserName(User)</a>
-        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="nav-link text-center" asp-controller="Account" asp-action="ManageAccount">Account</a>
+           data-bs-toggle="dropdown" aria-expanded="false">Hello @user.Name</a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <a class="nav-link text-center" asp-controller="Account" asp-action="ManageAccount">Your account</a>
             <a class="nav-link text-center" asp-controller="Account" asp-action="Logout">Log out</a>
         </ul>
     </li>
