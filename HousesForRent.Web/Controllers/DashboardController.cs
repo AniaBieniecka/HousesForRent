@@ -6,19 +6,34 @@ using HousesForRent.Domain.Entities;
 using HousesForRent.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.AspNetCore.Identity;
+using static HousesForRent.Web.ViewModels.DashboardVM;
 
 namespace HousesForRent.Web.Controllers
 {
     public class DashboardController : Controller
     {
         private readonly IDashboardService _dashboardService;
-        public DashboardController(IDashboardService dashboardService)
+        private readonly IBookingService _bookingService;
+        public DashboardController(IDashboardService dashboardService, IBookingService bookingService)
         {
             _dashboardService = dashboardService;
+            _bookingService = bookingService;
         }
         public IActionResult Index()
         {
-            return View();
+
+            DashboardVM vm = new ()
+            {
+                lastBookings = _bookingService.GetAllBookings().OrderByDescending(u => u.BookingDate).Take(3).Select(u => new BookingDto
+                {
+                    bookingDate = DateOnly.FromDateTime(u.BookingDate),
+                   houseName= u.House.Name,
+                   cost = u.Cost
+                }).ToList(),
+            };
+
+            return View(vm);
         }
 
         public async Task<IActionResult> GetTotalBookingChartData()
