@@ -6,7 +6,6 @@ using HousesForRent.Domain.Entities;
 using HousesForRent.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Microsoft.AspNetCore.Identity;
 using static HousesForRent.Web.ViewModels.DashboardVM;
 
 namespace HousesForRent.Web.Controllers
@@ -22,7 +21,7 @@ namespace HousesForRent.Web.Controllers
         }
         public IActionResult Index()
         {
-
+            // pobranie 3 ostatnich zamówień oraz 3 najbardziej popularnych domów
             DashboardVM vm = new ()
             {
                 lastBookings = _bookingService.GetAllBookings().OrderByDescending(u => u.BookingDate).Take(3).Select(u => new BookingDto
@@ -31,6 +30,8 @@ namespace HousesForRent.Web.Controllers
                    houseName= u.House.Name,
                    cost = u.Cost
                 }).ToList(),
+                popularHouses = _bookingService.GetAllBookings().GroupBy(x => x.House).Select(g => new HouseDto { houseName = g.Key.Name, bookingQty = g.Count() })
+                .OrderByDescending(u => u.bookingQty).Take(3).ToList()
             };
 
             return View(vm);

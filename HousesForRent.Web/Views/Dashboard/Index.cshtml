@@ -119,7 +119,14 @@
             <div class="card mt-3">
                 <div class="card-body pb-2 ">
                     <p class="text-muted">
-
+                        Most popular houses:
+                        @foreach (var house in Model.popularHouses)
+                        {
+                            <li class="text-muted">
+                               @house.houseName:
+                               booked @house.bookingQty times
+                            </li>
+                        }
                     </p>
                 </div>
             </div>
