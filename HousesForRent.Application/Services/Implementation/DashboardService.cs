@@ -112,7 +112,7 @@ namespace HousesForRent.Application.Services.Implementation
             u.BookingDate <= DateTime.Now);
 
             double countByPreviousMonth = totalBookings.Count(u => u.BookingDate >= previousMonthStartDate &&
-            u.BookingDate <= currentMonthStartDate);
+            u.BookingDate < currentMonthStartDate);
 
             var RadialBarChartDTO = SD.GetRadialChartViewModel(totalBookings.Count(), countByCurrentMonth, countByPreviousMonth);
 
@@ -127,7 +127,7 @@ namespace HousesForRent.Application.Services.Implementation
             u.BookingDate <= DateTime.Now).Sum(u => u.Cost);
 
             double sumByPreviousMonth = totalBookings.Where(u => u.BookingDate >= previousMonthStartDate &&
-            u.BookingDate <= currentMonthStartDate).Sum(u => u.Cost);
+            u.BookingDate < currentMonthStartDate).Sum(u => u.Cost);
 
             var RadialBarChartDTO = SD.GetRadialChartViewModel(Convert.ToInt32(totalBookings.Sum(u => u.Cost)), sumByCurrentMonth, sumByPreviousMonth);
 
@@ -142,7 +142,7 @@ namespace HousesForRent.Application.Services.Implementation
             u.CreatedAt <= DateTime.Now);
 
             double countByPreviousMonth = totalUsers.Count(u => u.CreatedAt >= previousMonthStartDate &&
-            u.CreatedAt <= currentMonthStartDate);
+            u.CreatedAt < currentMonthStartDate);
 
             var RadialBarChartDTO = SD.GetRadialChartViewModel(totalUsers.Count(), countByCurrentMonth, countByPreviousMonth);
 
