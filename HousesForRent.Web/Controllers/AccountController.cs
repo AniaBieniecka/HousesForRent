@@ -1,11 +1,15 @@
 ﻿using Azure.Identity;
 using HousesForRent.Application.Common.Interfaces;
 using HousesForRent.Application.Common.Utility;
+using HousesForRent.Application.Services.Implementation;
+using HousesForRent.Application.Services.Interface;
 using HousesForRent.Domain.Entities;
 using HousesForRent.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Claims;
 
 namespace HousesForRent.Web.Controllers
 {
@@ -14,13 +18,15 @@ namespace HousesForRent.Web.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IBookingService _bookingService;
         public AccountController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager, IBookingService bookingService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _bookingService = bookingService;
         }
         public IActionResult Login(string returnUrl = null)
         {
@@ -150,6 +156,68 @@ namespace HousesForRent.Web.Controllers
         }
 
         public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = SD.Role_Admin)]
+
+        public async Task<IActionResult> Index()
+        {
+            var users = _userManager.Users.ToList();
+            var userList = new List<UserVM>();
+
+            foreach (var user in users)
+            {
+                var userRoles = await _userManager.GetRolesAsync(user);
+                userList.Add(new UserVM
+                {
+                    Id = user.Id,
+                    Name = user.UserName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    CreatedAt = user.CreatedAt,
+                    Roles = userRoles
+                });
+
+            }
+            return View(userList.ToList());
+        }
+
+        public IActionResult CustomerBookings(string id)
+        {
+            var bookingList = _bookingService.GetAllBookings(id).ToList();
+            return View(bookingList);
+        }
+
+        public IActionResult ManageAccount()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = _userManager.FindByIdAsync(userId).GetAwaiter().GetResult();
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ManageAccount(ApplicationUser user)
+        {
+            if (ModelState.IsValid)
+            {
+                var userFromDB = await _userManager.FindByIdAsync(user.Id);
+                userFromDB.PhoneNumber = user.PhoneNumber;
+                userFromDB.Name = user.Name;
+                await _userManager.UpdateAsync(userFromDB);
+                TempData["success"] = "The account was updated successfully";
+                return RedirectToAction("Index", "Home");
+            }
+
+            else
+                TempData["error"] = "The account wasn't updated successfully";
+
+            return View(user);
+        }
+        public IActionResult ForgotPassword()
         {
             return View();
         }

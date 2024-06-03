@@ -129,7 +129,7 @@ namespace HousesForRent.Web.Controllers
             }
 
             else
-                TempData["error"] = "The house wasn't deleted successfully";
+                TempData["error"] = "The house wasn't updated successfully";
 
             return View(houseVM);
 
