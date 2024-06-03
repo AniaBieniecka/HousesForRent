@@ -209,13 +209,17 @@ namespace HousesForRent.Web.Controllers
                 userFromDB.Name = user.Name;
                 await _userManager.UpdateAsync(userFromDB);
                 TempData["success"] = "The account was updated successfully";
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index", "Home");
             }
 
             else
                 TempData["error"] = "The account wasn't updated successfully";
 
             return View(user);
+        }
+        public IActionResult ForgotPassword()
+        {
+            return View();
         }
     }
 }
