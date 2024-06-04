@@ -11,24 +11,19 @@ function loadTotalUserRadialChart() {
         type: 'GET',
         dataType: 'json',
         success: function (data) {
+
             document.querySelector("#spanTotalUserCount").innerHTML = data.totalCount;
 
-            var sectionCurrentCount = document.createElement("span");
-            if (data.monthlyChange > 0) {
-                sectionCurrentCount.className = "text-success me-1";
-                sectionCurrentCount.innerHTML = ' + ' + data.countCurrentMonth + '</span>';
-            }
-            else {
-                sectionCurrentCount.className = "text-danger me-1";
-                sectionCurrentCount.innerHTML = ' ' + data.countCurrentMonth + '</span>';
-            }
-
+            var sectionCurrentCount = document.createElement("strong");
+            document.querySelector("#sectionUserCount").innerHTML += "This month new users: ";
             document.querySelector("#sectionUserCount").append(sectionCurrentCount);
-            document.querySelector("#sectionUserCount").append("since last month");
+            sectionCurrentCount.innerHTML = data.countCurrentMonth + ' </strong>';
 
+            document.querySelector("#totalUserRadialChart").innerHTML += "Monthly change: ";
             loadRadialBarChart("totalUserRadialChart", data);
 
             $(".chart-spinner").hide();
+
         }
     })
 }

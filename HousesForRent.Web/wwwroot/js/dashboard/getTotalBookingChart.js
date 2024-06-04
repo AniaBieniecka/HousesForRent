@@ -13,19 +13,12 @@ function loadTotalBookingRadialChart() {
         success: function (data) {
             document.querySelector("#spanTotalBookingCount").innerHTML = data.totalCount;
 
-            var sectionCurrentCount = document.createElement("span");
-            if (data.monthlyChange > 0) {
-                sectionCurrentCount.className = "text-success me-1";
-                sectionCurrentCount.innerHTML = ' + ' + data.countCurrentMonth + '</span>';
-            }
-            else {
-                sectionCurrentCount.className = "text-danger me-1";
-                sectionCurrentCount.innerHTML = ' ' + data.countCurrentMonth + '</span>';
-            }
-
+            var sectionCurrentCount = document.createElement("strong");
+            document.querySelector("#sectionBookingCount").innerHTML += "This month bookings: ";
             document.querySelector("#sectionBookingCount").append(sectionCurrentCount);
-            document.querySelector("#sectionBookingCount").append("since last month");
+            sectionCurrentCount.innerHTML = data.countCurrentMonth + ' </strong>';
 
+            document.querySelector("#totalBookingRadialChart").innerHTML += "Monthly change: ";
             loadRadialBarChart("totalBookingRadialChart", data);
 
             $(".chart-spinner").hide();

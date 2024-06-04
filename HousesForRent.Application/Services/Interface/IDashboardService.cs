@@ -16,5 +16,7 @@ namespace HousesForRent.Application.Services.Interface
         Task<RadialBarChartDTO> GetTotalIncomeChartData();
         Task<PieChartDTO> GetCustomerBookingPieChartData();
         Task<LineChartDTO> GetCustomerAndBookingLineChartData();
+        Task<BarChartDTO> GetIncomeAndBookingBarChartData();
+
     }
 }

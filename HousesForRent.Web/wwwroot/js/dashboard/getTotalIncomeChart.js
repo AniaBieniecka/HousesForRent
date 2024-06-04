@@ -11,24 +11,19 @@ function loadTotalIncomeRadialChart() {
         type: 'GET',
         dataType: 'json',
         success: function (data) {
+
             document.querySelector("#spanTotalIncome").innerHTML = formatCurrency(data.totalCount);
 
-            var sectionCurrentCount = document.createElement("span");
-            if (data.monthlyChange > 0) {
-                sectionCurrentCount.className = "text-success me-1";
-                sectionCurrentCount.innerHTML = ' + ' + formatCurrency(data.countCurrentMonth)+ '</span>';
-            }
-            else {
-                sectionCurrentCount.className = "text-danger me-1";
-                sectionCurrentCount.innerHTML = ' ' + formatCurrency(data.countCurrentMonth) + '</span>';
-            }
-
+            var sectionCurrentCount = document.createElement("strong");
+            document.querySelector("#sectionIncome").innerHTML += "This month bookings: ";
             document.querySelector("#sectionIncome").append(sectionCurrentCount);
-            document.querySelector("#sectionIncome").append("since last month");
+            sectionCurrentCount.innerHTML = formatCurrency(data.countCurrentMonth) + ' </strong>';
 
+            document.querySelector("#totalIncomeRadialChart").innerHTML += "Monthly change: ";
             loadRadialBarChart("totalIncomeRadialChart", data);
 
             $(".chart-spinner").hide();
+
         }
     })
 }

@@ -11,7 +11,7 @@
             sparkline: {
                 enabled: true
             },
-            offsetY: -10,
+            offsetY: 0,
         },
         series: data.series,
         plotOptions: {
