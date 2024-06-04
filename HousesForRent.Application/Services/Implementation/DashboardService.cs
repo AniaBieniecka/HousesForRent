@@ -149,5 +149,48 @@ namespace HousesForRent.Application.Services.Implementation
             return RadialBarChartDTO;
         }
 
+        public async Task<BarChartDTO> GetIncomeAndBookingBarChartData()
+        {
+            var bookings = _unitOfWork.Booking.GetAll(u=>(u.Status != SD.StatusPending || u.Status != SD.StatusCancelled)&&(u.BookingDate.Year==DateTime.Now.Year))
+                .GroupBy(u => u.BookingDate.ToString("MMMM"))
+                .Select(x => new
+                {
+                    Month = x.Key,
+                    BookingsCount = (double)x.Count(),
+                    BookingsCost = x.Sum(i=>i.Cost)
+                });
+
+            var newBookingData = bookings.Select(x => x.BookingsCount).ToArray();
+            var incomeData = bookings.Select(x => x.BookingsCost).ToArray();
+            var categories = bookings.Select(x => x.Month).ToArray();
+
+            List<BarChartData> chartDataList = new()
+            {
+                new BarChartData
+                {
+                    Name = "New bookings",
+                    Type = "column",
+                    Data = newBookingData,
+                    Unit = ""
+
+                },
+                new BarChartData
+                {
+                    Name = "Income",
+                    Type = "column",
+                    Data = incomeData,
+                    Unit = "PLN"
+                }
+            };
+
+            BarChartDTO barchartDTO = new()
+            {
+                Categories = categories,
+                Series = chartDataList
+            };
+
+            return barchartDTO;
+        }
+
     }
 }

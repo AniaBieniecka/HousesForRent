@@ -61,5 +61,10 @@ namespace HousesForRent.Web.Controllers
         {
             return Json(await _dashboardService.GetCustomerAndBookingLineChartData());
         }
+
+        public async Task<IActionResult> GetIncomeAndBookingBarChartData()
+        {
+            return Json(await _dashboardService.GetIncomeAndBookingBarChartData());
+        }
     }
 }
