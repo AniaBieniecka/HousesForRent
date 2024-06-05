@@ -23,16 +23,28 @@
                     </div>
                     <div class="row p-3">
                         <div class="col-12">
-                            <h4 class="text-primary">Price: @house.Price.ToString("c")</h4>
-                            <p>Max. occupancy: @house.Occupancy</p>
-                            <p>Area: @house.Area m<sup>2</sup></p>
+                                @if (house.IsDiscountActivated == true)
+                                {
+                                    <h4 class="text-primary">
+                                        Price: <s>@house.Price.ToString("c")</s>
+                                        @house.DiscountPrice.ToString("c");
+                                    </h4>
+                                }
+                                else
+                                {
+                                    <h4 class="text-primary">
+                                        Price: @house.Price.ToString("c")
+                                    </h4>
+                                }
+                                <p>Max. occupancy: @house.Occupancy</p>
+                                <p>Area: @house.Area m<sup>2</sup></p>
                         </div>
                         <div class="col-12 col-xxl-6 align-content-end">
 
                             @if (Model.CheckInDate >= DateOnly.FromDateTime(DateTime.Now))
                             {
                                 @if (house.IsBooked == false)
-                                { 
+                                {
                                     <a asp-controller="Booking" asp-action="ProcessBooking"
                                        asp-route-houseId="@house.Id" asp-route-checkInDate="@Model.CheckInDate"
                                        asp-route-nightsQty="@Model.NightsQty"

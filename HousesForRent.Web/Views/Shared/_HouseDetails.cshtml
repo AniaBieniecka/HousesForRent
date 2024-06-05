@@ -27,6 +27,18 @@
             Area: @Model.Area m<sup>2</sup> <br />
             Location: @Model.Location
         </p>
-        <h4 class="text-primary">Price: @Model.Price.ToString("c")</h4>
+        @if (Model.IsDiscountActivated == true)
+        {
+            <h4 class="text-primary">
+                Price: <s>@Model.Price.ToString("c")</s>
+                @Model.DiscountPrice.ToString("c");
+            </h4>
+        }
+        else
+        {
+            <h4 class="text-primary">
+                Price: @Model.Price.ToString("c")
+            </h4>
+        }
     </div>
 </div>
