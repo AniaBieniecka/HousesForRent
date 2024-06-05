@@ -52,6 +52,7 @@ namespace HousesForRent.Web.Controllers
             }
             if (ModelState.IsValid)
             {
+                house.Occupancy = house.SingleBedQuantity + house.DoubleBedQuantity * 2;
                 _houseService.CreateHouse(house);
 
                 if (amenityId is not null)
@@ -98,6 +99,8 @@ namespace HousesForRent.Web.Controllers
             }
             if (ModelState.IsValid)
             {
+                houseVM.House.Occupancy = houseVM.House.SingleBedQuantity + houseVM.House.DoubleBedQuantity * 2;
+
                 _houseService.UpdateHouse(houseVM.House);
 
                 // updating HouseAmenity
