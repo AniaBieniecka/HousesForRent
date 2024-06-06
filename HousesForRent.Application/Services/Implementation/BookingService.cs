@@ -52,8 +52,8 @@ namespace HousesForRent.Application.Services.Implementation
 
         public bool IsHouseBooked(int houseId, int nightsQty, DateOnly checkInDate)
         {
-            var bookings = _unitOfWork.Booking.GetAll(u => u.Status == SD.StatusPending ||
-            u.Status == SD.StatusApproved || u.Status == SD.StatusCheckedIn || u.HouseId == houseId).ToList();
+            var bookings = _unitOfWork.Booking.GetAll(u => (u.Status == SD.StatusPending ||
+            u.Status == SD.StatusApproved || u.Status == SD.StatusCheckedIn) && u.HouseId == houseId).ToList();
             return  SD.isHouseBooked(houseId, checkInDate, nightsQty, bookings);
         }
 

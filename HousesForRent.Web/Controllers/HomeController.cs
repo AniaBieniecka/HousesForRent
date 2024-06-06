@@ -73,11 +73,12 @@ namespace HousesForRent.Web.Controllers
             }
 
 
-            var bookings = _bookingService.GetAllBookings("","Pending,Approved,CheckedIn").ToList();
+            //var bookings = _bookingService.GetAllBookings("","Pending,Approved,CheckedIn").ToList();
                 
             foreach (var houseVM in homeVM.HouseVMList)
             {
-                houseVM.House.IsBooked = SD.isHouseBooked(houseVM.House.Id, homeVM.CheckInDate, homeVM.NightsQty, bookings);
+                //    houseVM.House.IsBooked = SD.isHouseBooked(houseVM.House.Id, homeVM.CheckInDate, homeVM.NightsQty, bookings);
+                houseVM.House.IsBooked = _bookingService.IsHouseBooked(houseVM.House.Id, homeVM.NightsQty, homeVM.CheckInDate);
             }
 
             return PartialView("_HouseGrid", homeVM);
