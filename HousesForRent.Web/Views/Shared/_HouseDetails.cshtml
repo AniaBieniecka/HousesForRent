@@ -1,20 +1,20 @@
-﻿@model House
+﻿@model HouseVM
 
 <div class="row">
     <div class="col-5">
-        <img src="@Model.ImageUrl" class="w-100" />
+        <img src="@Model.House.ImageUrl" class="w-100" />
     </div>
     <div class="col-7">
         <p>
-            @Model.Description
+            @Model.House.Description
         </p>
-        @if (Model.houseAmenities != null && Model.houseAmenities.Count() > 0)
+        @if (Model.House.houseAmenities != null && Model.House.houseAmenities.Count() > 0)
         {
             <p>
                 Amenities:
             </p>
             <ul>
-                @foreach (var houseAmenity in Model.houseAmenities)
+                @foreach (var houseAmenity in Model.House.houseAmenities)
                 {
                     <li>
                         @houseAmenity.amenity.Name
@@ -23,21 +23,24 @@
             </ul>
         }
         <p>
-            Max. occupancy: @Model.Occupancy <br />
-            Area: @Model.Area m<sup>2</sup> <br />
-            Location: @Model.Location
+            Max. occupancy: @Model.House.Occupancy <br />
+            Single beds quantity: @Model.House.SingleBedQuantity
+            Double beds quantity: @Model.House.DoubleBedQuantity
+            House area: @Model.House.Area <sup>2</sup> <br />
+            Location: @Model.House.Location
+
         </p>
-        @if (Model.IsDiscountActivated == true)
+        @if (Model.House.IsDiscountActivated == true)
         {
             <h4 class="text-primary">
-                Price: <s>@Model.Price.ToString("c")</s>
-                @Model.DiscountPrice.ToString("c");
+                Price: <s>@Model.House.Price.ToString("c")</s>
+                @Model.House.DiscountPrice.ToString("c");
             </h4>
         }
         else
         {
             <h4 class="text-primary">
-                Price: @Model.Price.ToString("c")
+                Price: @Model.House.Price.ToString("c")
             </h4>
         }
     </div>

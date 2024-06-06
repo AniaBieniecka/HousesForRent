@@ -7,7 +7,7 @@ namespace HousesForRent.Web.ViewModels
 {
     public class HomeVM
     {
-        public IEnumerable<House> HouseList { get; set; }
+        public List<HouseVM> HouseVMList { get; set; }
         [Display(Name ="Check-in date")]
         public DateOnly CheckInDate { get; set; }
         [Display(Name = "Check-out date")]

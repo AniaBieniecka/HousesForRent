@@ -2,51 +2,51 @@
 
 <div id="HouseGrid">
     <div class="row justify-content-center p-3">
-        @foreach (var house in Model.HouseList)
+        @foreach (var houseVM in Model.HouseVMList)
         {
             <div class="col-lg-4">
                 <div class="card bg-light my-2 ">
                     <div class="row p-3 justify-content-end">
                         <div class="col-12 col-xl-6">
-                            <button type="button" class="btn btn-primary w-100" data-toggle="modal" data-target="#detailView-@(house.Id)">
+                            <button type="button" class="btn btn-primary w-100" data-toggle="modal" data-target="#detailView-@(houseVM.House.Id)">
                                 View Details
                             </button>
                         </div>
                     </div>
                     <div class="row align">
-                        <h3 class="text-primary px-4">@house.Name</h3>
+                        <h3 class="text-primary px-4">@houseVM.House.Name</h3>
                     </div>
                     <div class="container px-2 d-flex justify-content-center align-items-center" style="height: 400px;">
 
-                        <img src="@house.ImageUrl" class="img-fluid" style="max-width: 100%; max-height: 100%;" />
+                        <img src="@houseVM.House.ImageUrl" class="img-fluid" style="max-width: 100%; max-height: 100%;" />
 
                     </div>
                     <div class="row p-3">
                         <div class="col-12">
-                                @if (house.IsDiscountActivated == true)
+                            @if (houseVM.House.IsDiscountActivated == true)
                                 {
                                     <h4 class="text-primary">
-                                        Price: <s>@house.Price.ToString("c")</s>
-                                        @house.DiscountPrice.ToString("c");
+                                    Price: <s>@houseVM.House.Price.ToString("c")</s>
+                                    @houseVM.House.DiscountPrice.ToString("c");
                                     </h4>
                                 }
                                 else
                                 {
                                     <h4 class="text-primary">
-                                        Price: @house.Price.ToString("c")
+                                    Price: @houseVM.House.Price.ToString("c")
                                     </h4>
                                 }
-                                <p>Max. occupancy: @house.Occupancy</p>
-                                <p>Area: @house.Area m<sup>2</sup></p>
+                            <p>Max. occupancy: @houseVM.House.Occupancy</p>
+                            <p>House area: @houseVM.House.Area m<sup>2</sup></p>
                         </div>
                         <div class="col-12 col-xxl-6 align-content-end">
 
                             @if (Model.CheckInDate >= DateOnly.FromDateTime(DateTime.Now))
                             {
-                                @if (house.IsBooked == false)
+                                @if (houseVM.House.IsBooked == false)
                                 {
                                     <a asp-controller="Booking" asp-action="ProcessBooking"
-                                       asp-route-houseId="@house.Id" asp-route-checkInDate="@Model.CheckInDate"
+                                       asp-route-houseId="@houseVM.House.Id" asp-route-checkInDate="@Model.CheckInDate"
                                        asp-route-nightsQty="@Model.NightsQty"
                                        class="btn btn-primary w-100">
                                         Book
@@ -64,16 +64,16 @@
                 </div>
             </div>
             <!-- Modal -->
-            <div class="modal fade modal-xl" id="detailView-@(@house.Id)" tabindex="-1" role="dialog" aria-labelledby="viewDetailLabel" aria-hidden="true">
+            <div class="modal fade modal-xl" id="detailView-@(@houseVM.House.Id)" tabindex="-1" role="dialog" aria-labelledby="viewDetailLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="viewDetailLabel">Details @house.Name</h5>
+                            <h5 class="modal-title" id="viewDetailLabel">Details @houseVM.House.Name</h5>
                             <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
                             </button>
                         </div>
                         <div class="modal-body">
-                            <partial name="_HouseDetails" model="@house" />
+                            <partial name="_HouseDetails" model="@Model.HouseVMList.FirstOrDefault(u=>u.House.Id==houseVM.House.Id)" />
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
