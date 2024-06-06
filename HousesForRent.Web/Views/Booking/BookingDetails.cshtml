@@ -1,4 +1,4 @@
-﻿@model Booking
+﻿@model BookingVM
 
 <div class="container p-2">
     <div class="row">
@@ -12,30 +12,30 @@
                 </a>
             </div>
             <hr>
-            <partial name="_HouseDetails" model="@Model.House" />
+            <partial name="_HouseDetails" model="@Model.HouseVM" />
             <hr>
             <div class="text-end">
                 <h4>
-                    Total cost: @Model.Cost.ToString("c");
+                    Total cost: @Model.Booking.Cost.ToString("c");
                 </h4>
             </div>
 
         </div>
         <div class="col-12 col-lg-6 p-3 border">
             <form method="post">
-                <input asp-for="Id" hidden />
-                <input asp-for="HouseId" hidden />
-                <input asp-for="UserId" hidden />
-                <input asp-for="CheckInDate" hidden />
-                <input asp-for="CheckOutDate" hidden />
-                <input asp-for="NightsQty" hidden />
+                <input asp-for="Booking.Id" hidden />
+                <input asp-for="Booking.HouseId" hidden />
+                <input asp-for="Booking.UserId" hidden />
+                <input asp-for="Booking.CheckInDate" hidden />
+                <input asp-for="Booking.CheckOutDate" hidden />
+                <input asp-for="Booking.NightsQty" hidden />
 
                 <div class="row p-1">
                     <div class="col-8">
                         <h3 class="text-primary">Enter Booking details</h3>
                     </div>
                     <div class="col-4">
-                        @if ((Model.Status == SD.StatusApproved || Model.Status == SD.StatusPending)
+                        @if ((Model.Booking.Status == SD.StatusApproved || Model.Booking.Status == SD.StatusPending)
                         && User.IsInRole(SD.Role_Admin))
                         {
                             <button type="submit" asp-action="Cancel" class="btn btn-danger float-end"><i class="bi bi-x-circle"></i> Cancel booking</button>
@@ -45,68 +45,68 @@
                 </div>
                 <div class="row p-1">
                     <div class="form-group p-2 col-6">
-                        <label asp-for="UserName"></label>
-                        <input asp-for="UserName" class="form-control" />
-                        <span asp-validation-for="UserName" class="text-danger"></span>
+                        <label asp-for="Booking.UserName"></label>
+                        <input asp-for="Booking.UserName" class="form-control" />
+                        <span asp-validation-for="Booking.UserName" class="text-danger"></span>
                     </div>
                     <div class="form-group p-2 col-6">
-                        <label asp-for="UserEmail"></label>
-                        <input asp-for="UserEmail" class="form-control" />
-                        <span asp-validation-for="UserEmail" class="text-danger"></span>
+                        <label asp-for="Booking.UserEmail"></label>
+                        <input asp-for="Booking.UserEmail" class="form-control" />
+                        <span asp-validation-for="Booking.UserEmail" class="text-danger"></span>
                     </div>
                     <div class="form-group p-2 col-6">
-                        <label asp-for="Phone"></label>
-                        <input asp-for="Phone" class="form-control" />
-                        <span asp-validation-for="Phone" class="text-danger"></span>
+                        <label asp-for="Booking.Phone"></label>
+                        <input asp-for="Booking.Phone" class="form-control" />
+                        <span asp-validation-for="Booking.Phone" class="text-danger"></span>
                     </div>
                     <div class="form-group p-2 col-6">
-                        <label asp-for="NightsQty"></label>
-                        <input asp-for="NightsQty" disabled class="form-control" />
+                        <label asp-for="Booking.NightsQty"></label>
+                        <input asp-for="Booking.NightsQty" disabled class="form-control" />
                     </div>
                     <div class="form-group p-2 col-6">
-                        <label asp-for="Status"></label>
-                        <input asp-for="Status" disabled class="form-control" />
+                        <label asp-for="Booking.Status"></label>
+                        <input asp-for="Booking.Status" disabled class="form-control" />
                     </div>
                     <div class="form-group p-2 col-6">
-                        <label asp-for="BookingDate"></label>
-                        <input asp-for="BookingDate" disabled class="form-control" />
+                        <label asp-for="Booking.BookingDate"></label>
+                        <input asp-for="Booking.BookingDate" disabled class="form-control" />
                     </div>
                     <div class="form-group p-2 col-6">
-                        <label asp-for="CheckInDate"></label>
-                        <input asp-for="CheckInDate" disabled class="form-control" />
+                        <label asp-for="Booking.CheckInDate"></label>
+                        <input asp-for="Booking.CheckInDate" disabled class="form-control" />
                     </div>
                     <div class="form-group p-2 col-6">
-                        <label asp-for="ActualCheckInDate"></label>
-                        <input asp-for="ActualCheckInDate" disabled class="form-control" />
+                        <label asp-for="Booking.ActualCheckInDate"></label>
+                        <input asp-for="Booking.ActualCheckInDate" disabled class="form-control" />
                     </div>
 
                     <div class="form-group p-2 col-6">
-                        <label asp-for="CheckOutDate"></label>
-                        <input asp-for="CheckOutDate" disabled class="form-control" />
-                        <span asp-validation-for="CheckOutDate"  class="text-danger"></span>
+                        <label asp-for="Booking.CheckOutDate"></label>
+                        <input asp-for="Booking.CheckOutDate" disabled class="form-control" />
+                        <span asp-validation-for="Booking.CheckOutDate" class="text-danger"></span>
                     </div>
                     <div class="form-group p-2 col-6">
-                        <label asp-for="ActualCheckOutDate"></label>
-                        <input asp-for="ActualCheckOutDate" disabled class="form-control" />
-                        <span asp-validation-for="ActualCheckOutDate" class="text-danger"></span>
+                        <label asp-for="Booking.ActualCheckOutDate"></label>
+                        <input asp-for="Booking.ActualCheckOutDate" disabled class="form-control" />
+                        <span asp-validation-for="Booking.ActualCheckOutDate" class="text-danger"></span>
                     </div>
-                    @if (Model.IsPaymentSuccessful || User.IsInRole(SD.Role_Admin))
+                    @if (Model.Booking.IsPaymentSuccessful || User.IsInRole(SD.Role_Admin))
                     {
                         <div class="form-group p-2 col-6">
-                            <label asp-for="StripePaymentIntentId"></label>
-                            <input asp-for="StripePaymentIntentId" disabled class="form-control" />
+                            <label asp-for="Booking.StripePaymentIntentId"></label>
+                            <input asp-for="Booking.StripePaymentIntentId" disabled class="form-control" />
                         </div>
                         <div class="form-group p-2 col-6">
-                            <label asp-for="StripeSessionId"></label>
-                            <input asp-for="StripeSessionId" disabled class="form-control" />
+                            <label asp-for="Booking.StripeSessionId"></label>
+                            <input asp-for="Booking.StripeSessionId" disabled class="form-control" />
                         </div>                        
                         <div class="form-group p-2 col-6">
-                            <label asp-for="PaymentDate"></label>
-                            <input asp-for="PaymentDate" disabled class="form-control" />
+                            <label asp-for="Booking.PaymentDate"></label>
+                            <input asp-for="Booking.PaymentDate" disabled class="form-control" />
                         </div>
                         <div class="form-group p-2 col-6">
-                            <label asp-for="Status"></label>
-                            <input asp-for="Status" disabled class="form-control" />
+                            <label asp-for="Booking.Status"></label>
+                            <input asp-for="Booking.Status" disabled class="form-control" />
                         </div>
                     }
                 </div>
@@ -115,12 +115,12 @@
                 <div class="form-group p-1">
                     @if (User.IsInRole(SD.Role_Admin))
                     {
-                        if (Model.Status == SD.StatusApproved)
+                        if (Model.Booking.Status == SD.StatusApproved)
                         {
                          <button type="submit" asp-action="CheckIn" class="btn btn-primary form-control">Check in</button>
 
                         }
-                        if (Model.Status == SD.StatusCheckedIn)
+                        if (Model.Booking.Status == SD.StatusCheckedIn)
                         {
                             <button type="submit" asp-action="CheckOut" class="btn btn-primary form-control">Check out</button>
                         }

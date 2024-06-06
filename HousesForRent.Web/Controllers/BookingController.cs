@@ -1,5 +1,6 @@
 ﻿using HousesForRent.Application.Common.Interfaces;
 using HousesForRent.Application.Common.Utility;
+using HousesForRent.Application.Services.Implementation;
 using HousesForRent.Application.Services.Interface;
 using HousesForRent.Domain.Entities;
 using HousesForRent.Web.ViewModels;
@@ -19,12 +20,18 @@ namespace HousesForRent.Web.Controllers
     {
         private readonly IBookingService _bookingService;
         private readonly IHouseService _houseService;
+        private readonly IAmenityService _amenityService;
+        private readonly IHouseAmenityService _houseAmenityService;
         private readonly UserManager<ApplicationUser> _userManager;
-        public BookingController(IBookingService bookingService, IHouseService houseService, UserManager<ApplicationUser> userManager)
+        public BookingController(IBookingService bookingService, IHouseService houseService, IAmenityService amenityService,
+            IHouseAmenityService houseAmenityService, UserManager<ApplicationUser> userManager)
         {
             _bookingService = bookingService;
             _houseService = houseService;
+            _amenityService = amenityService;
+            _houseAmenityService = houseAmenityService;
             _userManager = userManager;
+
         }
         [Authorize]
         public IActionResult Index()
@@ -55,7 +62,18 @@ namespace HousesForRent.Web.Controllers
             };
             booking.Cost = booking.House.Price * nightsQty;
 
-            return View(booking);
+            BookingVM bookingVM = new()
+            {
+                Booking = booking,
+                HouseVM = new HouseVM()
+                {
+                    House = _houseService.GetHouse(houseId),
+                    AmenityList = _amenityService.GetAllAmenities().ToList(),
+                    HouseAmenitiesIdList = _houseAmenityService.GetAllHouseAmenities(houseId).Select(u => u.AmenityId).ToList()
+                }
+            };
+
+            return View(bookingVM);
         }
 
         [Authorize]
@@ -139,7 +157,19 @@ namespace HousesForRent.Web.Controllers
         public  IActionResult BookingDetails (int bookingId)
         {
             Booking bookingFromDB = _bookingService.GetBooking(bookingId);
-            return View(bookingFromDB);
+
+            BookingVM bookingVM = new()
+            {
+                Booking = bookingFromDB,
+                HouseVM = new HouseVM()
+                {
+                    House = _houseService.GetHouse(bookingFromDB.HouseId),
+                    AmenityList = _amenityService.GetAllAmenities().ToList(),
+                    HouseAmenitiesIdList = _houseAmenityService.GetAllHouseAmenities(bookingFromDB.HouseId).Select(u => u.AmenityId).ToList()
+                }
+            };
+
+            return View(bookingVM);
         }
 
         [HttpPost]

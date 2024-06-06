@@ -57,6 +57,8 @@ namespace HousesForRent.Web.Controllers
         {
             var houseList = _houseService.GetAllHouses();
 
+            homeVM.HouseVMList = new List<HouseVM>();
+
             foreach (var house in houseList)
             {
 
@@ -67,7 +69,7 @@ namespace HousesForRent.Web.Controllers
                     HouseAmenitiesIdList = _houseAmenityService.GetAllHouseAmenities(house.Id).Select(u => u.AmenityId).ToList()
                 };
 
-                homeVM.HouseVMList.ToList().Add(vm);
+                homeVM.HouseVMList.Add(vm);
             }
 
 
