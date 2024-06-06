@@ -73,10 +73,16 @@
                                 <span asp-validation-for="@Model.House.Description" class="text-danger"></span>
                             </div>
                         </div>
-                        @if (Model.AmenityList.Count !=0)
-                        {
-                            <div class="form-floating py-2 col-12 col-md-6">
-                                Choose amenities from the list:
+                        <div class="form-floating py-2 col-12 col-md-6">
+                            <div class="form-check px-4 pb-3">
+                                <input class="form-check-input" type="checkbox" value="true" name="IsDiscountActivated">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    Do you want to activate discount?
+                                </label>
+                            </div>
+                            @if (Model.AmenityList.Count != 0)
+                            {
+                                <p> Choose amenities from the list:</p>
                                 @foreach (var amenity in Model.AmenityList)
                                 {
                                     <div class="form-check py-1">
@@ -86,8 +92,9 @@
                                         </label>
                                     </div>
                                 }
-                            </div>
-                        }
+
+                            }
+                        </div>
                     </div>
                     <div class="row justify-content-md-center pt-2">
                         <div class="col-6 col-md-6">

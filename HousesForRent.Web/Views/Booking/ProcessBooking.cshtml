@@ -1,4 +1,4 @@
-﻿@model Booking
+﻿@model BookingVM
 
 <div class="container p-2">
     <div class="row">
@@ -12,22 +12,22 @@
                 </a>
             </div>
             <hr>
-            <partial name="_HouseDetails" model="@Model.House" />
+            <partial name="_HouseDetails" model="@Model.HouseVM" />
             <hr>
             <div class="text-end">
                 <h4>
-                    Total cost: @Model.Cost.ToString("c");
+                    Total cost: @Model.Booking.Cost.ToString("c");
                 </h4>
             </div>
 
         </div>
         <div class="col-12 col-lg-5 p-3 border">
             <form method="post">
-                <input asp-for="HouseId" hidden />               
-                <input asp-for="UserId" hidden />
-                <input asp-for="CheckInDate" hidden />
-                <input asp-for="CheckOutDate" hidden />
-                <input asp-for="NightsQty" hidden />
+                <input asp-for="Booking.HouseId" hidden />
+                <input asp-for="Booking.UserId" hidden />
+                <input asp-for="Booking.CheckInDate" hidden />
+                <input asp-for="Booking.CheckOutDate" hidden />
+                <input asp-for="Booking.NightsQty" hidden />
 
                 <div class="row">
                     <div class="col-12 p-4">
@@ -35,34 +35,34 @@
                     </div>
                 </div>
                 <div class="form-group p-2">
-                    <label asp-for="UserName"></label>
-                    <input asp-for="UserName" class="form-control" />
-                    <span asp-validation-for="UserName" class="text-danger"></span>
+                    <label asp-for="Booking.UserName"></label>
+                    <input asp-for="Booking.UserName" class="form-control" />
+                    <span asp-validation-for="Booking.UserName" class="text-danger"></span>
                 </div>
                 <div class="form-group p-2">
-                    <label asp-for="UserEmail"></label>
-                    <input asp-for="UserEmail" class="form-control" />
-                    <span asp-validation-for="UserEmail" class="text-danger"></span>
+                    <label asp-for="Booking.UserEmail"></label>
+                    <input asp-for="Booking.UserEmail" class="form-control" />
+                    <span asp-validation-for="Booking.UserEmail" class="text-danger"></span>
                 </div>
                 <div class="form-group p-2">
-                    <label asp-for="Phone"></label>
-                    <input asp-for="Phone" class="form-control" />
-                    <span asp-validation-for="Phone" class="text-danger"></span>
+                    <label asp-for="Booking.Phone"></label>
+                    <input asp-for="Booking.Phone" class="form-control" />
+                    <span asp-validation-for="Booking.Phone" class="text-danger"></span>
                 </div>
                 <div class="form-group p-2">
-                    <label asp-for="CheckInDate"></label>
-                    <input asp-for="CheckInDate" disabled class="form-control" />
+                    <label asp-for="Booking.CheckInDate"></label>
+                    <input asp-for="Booking.CheckInDate" disabled class="form-control" />
                 </div>
                 <div class="form-group p-2">
-                    <label asp-for="CheckOutDate"></label>
-                    <input asp-for="CheckOutDate" disabled class="form-control" />
+                    <label asp-for="Booking.CheckOutDate"></label>
+                    <input asp-for="Booking.CheckOutDate" disabled class="form-control" />
                 </div>
                 <div class="form-group p-2">
-                    <label asp-for="NightsQty"></label>
-                    <input asp-for="NightsQty" disabled class="form-control" />
+                    <label asp-for="Booking.NightsQty"></label>
+                    <input asp-for="Booking.NightsQty" disabled class="form-control" />
                 </div>
                 <div class="form-group p-2">
-                    @if (Model.House.IsBooked)
+                    @if (Model.Booking.House.IsBooked)
                     {
 
                         <input class="btn btn-primary disabled form-control" value="Sold Out" />

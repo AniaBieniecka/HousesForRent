@@ -23,6 +23,10 @@ namespace HousesForRent.Domain.Entities
         [Display(Name = "Discount price per night")]
         [Range(0, double.MaxValue)]
         public double DiscountPrice { get; set; }
+        [Display(Name = "Is discount valid")]
+        [ValidateNever]
+        public bool IsDiscountActivated { get; set; } = false;
+        [Display(Name = "Max. occupancy")]
         public int Occupancy { get; set; }
         [Display(Name = "Number of rooms")]
         [Range(0, int.MaxValue)]

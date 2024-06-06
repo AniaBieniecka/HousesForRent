@@ -1,5 +1,6 @@
 using HousesForRent.Application.Common.Interfaces;
 using HousesForRent.Application.Common.Utility;
+using HousesForRent.Application.Services.Implementation;
 using HousesForRent.Application.Services.Interface;
 using HousesForRent.Domain.Entities;
 using HousesForRent.Web.Models;
@@ -14,34 +15,70 @@ namespace HousesForRent.Web.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IHouseService _houseService;
         private readonly IBookingService _bookingService;
-        public HomeController(ILogger<HomeController> logger, IHouseService houseService, IBookingService bookingService)
+        private readonly IAmenityService _amenityService;
+        private readonly IHouseAmenityService _houseAmenityService;
+        public HomeController(ILogger<HomeController> logger, IHouseService houseService, IBookingService bookingService, IAmenityService amenityService, IHouseAmenityService houseAmenityService)
         {
             _logger = logger;
             _houseService = houseService;
             _bookingService = bookingService;
+            _amenityService = amenityService;
+            _houseAmenityService = houseAmenityService;
         }
 
         public IActionResult Index()
         {
             var homeVM = new HomeVM()
             {
-                HouseList = _houseService.GetAllHouses(),
                 NightsQty = 1,
                 CheckInDate = DateOnly.FromDateTime(DateTime.Now),
+                HouseVMList = new List<HouseVM>()
 
             };
+            var HouseList = _houseService.GetAllHouses();
+
+            foreach (var house in HouseList)
+            {
+
+                HouseVM vm = new()
+                {
+                    House = house,
+                    AmenityList = _amenityService.GetAllAmenities().ToList(),
+                    HouseAmenitiesIdList = _houseAmenityService.GetAllHouseAmenities(house.Id).Select(u => u.AmenityId).ToList()
+                };
+
+                homeVM.HouseVMList.Add(vm);
+            }
 
             return View(homeVM);
         }
         [HttpPost]
         public IActionResult ShowHousesByDate(HomeVM homeVM)
         {
-            homeVM.HouseList = _houseService.GetAllHouses();
-            var bookings = _bookingService.GetAllBookings("","Pending,Approved,CheckedIn").ToList();
-                
-            foreach (var house in homeVM.HouseList)
+            var houseList = _houseService.GetAllHouses();
+
+            homeVM.HouseVMList = new List<HouseVM>();
+
+            foreach (var house in houseList)
             {
-                house.IsBooked = SD.isHouseBooked(house.Id, homeVM.CheckInDate, homeVM.NightsQty, bookings);
+
+                HouseVM vm = new()
+                {
+                    House = house,
+                    AmenityList = _amenityService.GetAllAmenities().ToList(),
+                    HouseAmenitiesIdList = _houseAmenityService.GetAllHouseAmenities(house.Id).Select(u => u.AmenityId).ToList()
+                };
+
+                homeVM.HouseVMList.Add(vm);
+            }
+
+
+            //var bookings = _bookingService.GetAllBookings("","Pending,Approved,CheckedIn").ToList();
+                
+            foreach (var houseVM in homeVM.HouseVMList)
+            {
+                //    houseVM.House.IsBooked = SD.isHouseBooked(houseVM.House.Id, homeVM.CheckInDate, homeVM.NightsQty, bookings);
+                houseVM.House.IsBooked = _bookingService.IsHouseBooked(houseVM.House.Id, homeVM.NightsQty, homeVM.CheckInDate);
             }
 
             return PartialView("_HouseGrid", homeVM);
