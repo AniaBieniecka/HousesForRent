@@ -9,7 +9,7 @@ namespace HousesForRent.Application.Services.Interface
 {
     public interface IHouseService
     {
-        IEnumerable<House> GetAllHouses();
+        IEnumerable<House> GetAllHouses(int? peopleQty=null);
         House GetHouse(int id);
         void CreateHouse(House house);
         void UpdateHouse(House house);

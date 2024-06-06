@@ -7,13 +7,16 @@ namespace HousesForRent.Web.ViewModels
 {
     public class HomeVM
     {
-        public IEnumerable<House> HouseList { get; set; }
+        public List<HouseVM> HouseVMList { get; set; }
         [Display(Name ="Check-in date")]
         public DateOnly CheckInDate { get; set; }
         [Display(Name = "Check-out date")]
         public DateOnly? CheckOutDate { get; set; }
         [Display(Name = "Nights quantity")]
         public int NightsQty { get; set; }
+
+        [Display(Name = "People quantity")]
+        public int PeopleQty { get; set; }
         public IEnumerable<Amenity> AmenityList { get; set;}
     }
 }

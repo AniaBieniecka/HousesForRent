@@ -5,7 +5,7 @@
         <img src="~/images/house/home-page-image.jpg" class="w-100" />
     </div>
     <div class="col-lg-6 col-md-6 p-4">
-        <h2 class="text-center text-primary ">Here you can find the most amazing houses to rent for your vaction</h2>
+        <h2 class="text-center text-primary ">Here you can find the most amazing houses for rent for your vaction</h2>
         <h4 class="text-center text-secondary-emphasis p-4">
             Check our offer below
         </h4>
@@ -13,20 +13,25 @@
 </div>
 <form method="post" asp-action="ShowHousesByDate">
     <div class="row justify-content-center align-items-center p-4">
-        <div class="form-floating py-2 col-6 col-xl-3 col-md-5">
+        <div class="form-floating py-2 col-6 col-xl-2 col-md-5">
             <input asp-for="CheckInDate" type="date" class="form-control border shadow" />
             <label asp-for="CheckInDate" class="m-2"></label>
             <span asp-validation-for="CheckInDate" class="text-danger"></span>
         </div>
-        <div class="form-floating py-2 col-6 col-xl-3 col-md-5">
+        <div class="form-floating py-2 col-6 col-xl-2 col-md-5">
             <input asp-for="NightsQty" class="form-control border shadow" />
             <label asp-for="NightsQty" class="m-2"></label>
             <span asp-validation-for="NightsQty" class="text-danger"></span>
         </div>
         <div class="form-floating py-2 col-6 col-xl-2 col-md-5">
-            <button type="button" onclick="LoadHouseList()" class="btn btn-primary w-100">Check availability</button>
+            <input asp-for="PeopleQty" class="form-control border shadow" />
+            <label asp-for="PeopleQty" class="m-2"></label>
+            <span asp-validation-for="PeopleQty" class="text-danger"></span>
         </div>
-        <partial name="_HouseGrid" model="Model" />
+    <div class="form-floating py-2 col-6 col-xl-2 col-md-5">
+        <button type="button" onclick="LoadHouseList()" class="btn btn-primary w-100">Check availability</button>
+    </div>
+    <partial name="_HouseGrid" model="@Model" />
 </form>
 
 @section scripts {
@@ -34,11 +39,12 @@
         function LoadHouseList() {
             var objData = {
                 checkInDate: $("#CheckInDate").val(),
-                NightsQty: $("#NightsQty").val()
+                NightsQty: $("#NightsQty").val(),
+                PeopleQty: $("#PeopleQty").val(),
             };
 
             $.ajax({
-                url: "@Url.Action("ShowHousesByDate","Home")",
+                url: "@Url.Action("ShowHousesByDate", "Home")",
                 data: objData,
                 type: "POST",
                 success: function (data) {

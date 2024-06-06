@@ -70,12 +70,18 @@ namespace HousesForRent.Application.Services.Implementation
 
         public House GetHouse(int id)
         {
-            return _unitOfWork.House.Get(u=>u.Id == id);    
+            return _unitOfWork.House.Get(u => u.Id == id);
         }
 
-        public IEnumerable<House> GetAllHouses()
+        public IEnumerable<House> GetAllHouses(int? peopleQty = null)
         {
-            return  _unitOfWork.House.GetAll();
+            if (peopleQty.HasValue)
+            {
+                return _unitOfWork.House.GetAll(u => u.Occupancy >= peopleQty);
+
+            }
+            else
+                return _unitOfWork.House.GetAll();
         }
 
         public void UpdateHouse(House house)

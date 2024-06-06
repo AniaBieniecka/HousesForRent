@@ -44,14 +44,17 @@ namespace HousesForRent.Web.Controllers
             return View(houseVM);
         }
         [HttpPost]
-        public IActionResult Create(House house, int[] amenityId)
+        public IActionResult Create(House house, bool IsDiscountActivated, int[] amenityId)
         {
+            house.IsDiscountActivated = IsDiscountActivated;
+
             if (house.Price < house.DiscountPrice)
             {
                 ModelState.AddModelError("DiscountPrice", "The discount price cannot be higer than standard price");
             }
             if (ModelState.IsValid)
             {
+                house.Occupancy = house.SingleBedQuantity + house.DoubleBedQuantity * 2;
                 _houseService.CreateHouse(house);
 
                 if (amenityId is not null)
@@ -90,14 +93,17 @@ namespace HousesForRent.Web.Controllers
             else return NotFound();
         }
         [HttpPost]
-        public IActionResult Update(HouseVM houseVM, int[] amenityId)
+        public IActionResult Update(HouseVM houseVM,bool IsDiscountActivated, int[] amenityId)
         {
+            houseVM.House.IsDiscountActivated = IsDiscountActivated;
+
             if (houseVM.House.Price < houseVM.House.DiscountPrice)
             {
                 ModelState.AddModelError("DiscountPrice", "The discount price cannot be higer than standard price");
             }
             if (ModelState.IsValid)
             {
+                houseVM.House.Occupancy = houseVM.House.SingleBedQuantity + houseVM.House.DoubleBedQuantity * 2;
                 _houseService.UpdateHouse(houseVM.House);
 
                 // updating HouseAmenity
