@@ -6,15 +6,8 @@
         {
             <div class="col-lg-4">
                 <div class="card bg-light my-2 ">
-                    <div class="row p-3 justify-content-end">
-                        <div class="col-12 col-xl-6">
-                            <button type="button" class="btn btn-primary w-100" data-toggle="modal" data-target="#detailView-@(houseVM.House.Id)">
-                                View Details
-                            </button>
-                        </div>
-                    </div>
                     <div class="row align">
-                        <h3 class="text-primary px-4">@houseVM.House.Name</h3>
+                        <h3 class="text-primary text-center pd-2 pt-4 px-1">@houseVM.House.Name</h3>
                     </div>
                     <div class="container px-2 d-flex justify-content-center align-items-center" style="height: 400px;">
 
@@ -60,6 +53,11 @@
                                 }
                             }
                         </div>
+                        <div class="col-12 col-xl-6">
+                            <button type="button" class="btn btn-primary w-100" data-toggle="modal" data-target="#detailView-@(houseVM.House.Id)">
+                                View Details
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -68,7 +66,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="viewDetailLabel">Details @houseVM.House.Name</h5>
+                            <h4 class="modal-title text-center" id="viewDetailLabel"> @houseVM.House.Name</h4>
                             <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
                             </button>
                         </div>
@@ -77,7 +75,10 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <a asp-controller="House" asp-action="Book" class="btn btn-primary">
+                            <a asp-controller="Booking" asp-action="ProcessBooking"
+                               asp-route-houseId="@houseVM.House.Id" asp-route-checkInDate="@Model.CheckInDate"
+                               asp-route-nightsQty="@Model.NightsQty"
+                               class="btn btn-primary">
                                 Book
                             </a>
                         </div>
@@ -87,3 +88,4 @@
         }
     </div>
 </div>
+
