@@ -11,20 +11,25 @@
         </h4>
     </div>
 </div>
+
+@{
+    var today = DateTime.Today.ToString("yyyy-MM-dd");
+}
+
 <form method="post" asp-action="ShowHousesByDate">
     <div class="row justify-content-center align-items-center p-4">
         <div class="form-floating py-2 col-6 col-xl-2 col-md-5">
-            <input asp-for="CheckInDate" type="date" class="form-control border shadow" />
+            <input asp-for="CheckInDate" type="date" class="form-control border shadow" min="@today" />
             <label asp-for="CheckInDate" class="m-2"></label>
             <span asp-validation-for="CheckInDate" class="text-danger"></span>
         </div>
         <div class="form-floating py-2 col-6 col-xl-2 col-md-5">
-            <input asp-for="NightsQty" class="form-control border shadow" />
+            <input asp-for="NightsQty" class="form-control border shadow"  min="1"/>
             <label asp-for="NightsQty" class="m-2"></label>
             <span asp-validation-for="NightsQty" class="text-danger"></span>
         </div>
         <div class="form-floating py-2 col-6 col-xl-2 col-md-5">
-            <input asp-for="PeopleQty" class="form-control border shadow" />
+            <input asp-for="PeopleQty" class="form-control border shadow" min="2"/>
             <label asp-for="PeopleQty" class="m-2"></label>
             <span asp-validation-for="PeopleQty" class="text-danger"></span>
         </div>
@@ -52,6 +57,6 @@
                     $("#HouseGrid").html(data);
                 }
             });
-        }
+        } 
     </script>
 }
