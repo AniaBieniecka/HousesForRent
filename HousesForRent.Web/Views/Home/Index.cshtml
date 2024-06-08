@@ -11,17 +11,27 @@
         </h4>
     </div>
 </div>
+
+@{
+    var today = DateTime.Today.ToString("yyyy-MM-dd");
+}
+
 <form method="post" asp-action="ShowHousesByDate">
     <div class="row justify-content-center align-items-center p-4">
-        <div class="form-floating py-2 col-6 col-xl-3 col-md-5">
-            <input asp-for="CheckInDate" type="date" class="form-control border shadow" />
+        <div class="form-floating py-2 col-6 col-xl-2 col-md-5">
+            <input asp-for="CheckInDate" type="date" class="form-control border shadow" min="@today" />
             <label asp-for="CheckInDate" class="m-2"></label>
             <span asp-validation-for="CheckInDate" class="text-danger"></span>
         </div>
-        <div class="form-floating py-2 col-6 col-xl-3 col-md-5">
-            <input asp-for="NightsQty" class="form-control border shadow" />
+        <div class="form-floating py-2 col-6 col-xl-2 col-md-5">
+            <input asp-for="NightsQty" class="form-control border shadow" min="1" />
             <label asp-for="NightsQty" class="m-2"></label>
             <span asp-validation-for="NightsQty" class="text-danger"></span>
+        </div>
+        <div class="form-floating py-2 col-6 col-xl-2 col-md-5">
+            <input asp-for="PeopleQty" class="form-control border shadow" min="2" />
+            <label asp-for="PeopleQty" class="m-2"></label>
+            <span asp-validation-for="PeopleQty" class="text-danger"></span>
         </div>
         <div class="form-floating py-2 col-6 col-xl-2 col-md-5">
             <button type="button" onclick="LoadHouseList()" class="btn btn-primary w-100">Check availability</button>
@@ -34,11 +44,12 @@
         function LoadHouseList() {
             var objData = {
                 checkInDate: $("#CheckInDate").val(),
-                NightsQty: $("#NightsQty").val()
+                NightsQty: $("#NightsQty").val(),
+                PeopleQty: $("#PeopleQty").val(),
             };
 
             $.ajax({
-                url: "@Url.Action("ShowHousesByDate","Home")",
+                url: "@Url.Action("ShowHousesByDate", "Home")",
                 data: objData,
                 type: "POST",
                 success: function (data) {
@@ -46,6 +57,16 @@
                     $("#HouseGrid").html(data);
                 }
             });
+        };
+
+        function ProcessBooking(houseId) {
+
+            var nightsQty = $("#NightsQty").val();
+            var checkInDate = $("#CheckInDate").val();
+
+            window.location.href = "/Booking/ProcessBooking?houseId=" + houseId + "&nightsQty=" + nightsQty + "&checkInDate=" + checkInDate;
+
+
         }
     </script>
 }

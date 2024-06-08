@@ -32,10 +32,11 @@ namespace HousesForRent.Web.Controllers
             {
                 NightsQty = 1,
                 CheckInDate = DateOnly.FromDateTime(DateTime.Now),
+                PeopleQty = 2,
                 HouseVMList = new List<HouseVM>()
 
             };
-            var HouseList = _houseService.GetAllHouses();
+            var HouseList = _houseService.GetAllHouses(homeVM.PeopleQty);
 
             foreach (var house in HouseList)
             {
@@ -50,12 +51,20 @@ namespace HousesForRent.Web.Controllers
                 homeVM.HouseVMList.Add(vm);
             }
 
+            //var bookings = _bookingService.GetAllBookings("","Pending,Approved,CheckedIn").ToList();
+                
+            foreach (var houseVM in homeVM.HouseVMList)
+            {
+                //    houseVM.House.IsBooked = SD.isHouseBooked(houseVM.House.Id, homeVM.CheckInDate, homeVM.NightsQty, bookings);
+                houseVM.House.IsBooked = _bookingService.IsHouseBooked(houseVM.House.Id, homeVM.NightsQty, homeVM.CheckInDate);
+            }
+
             return View(homeVM);
         }
         [HttpPost]
         public IActionResult ShowHousesByDate(HomeVM homeVM)
         {
-            var houseList = _houseService.GetAllHouses();
+            var houseList = _houseService.GetAllHouses(homeVM.PeopleQty);
 
             homeVM.HouseVMList = new List<HouseVM>();
 

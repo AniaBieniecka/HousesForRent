@@ -6,22 +6,15 @@
         {
             <div class="col-lg-4">
                 <div class="card bg-light my-2 ">
-                    <div class="row p-3 justify-content-end">
-                        <div class="col-12 col-xl-6">
-                            <button type="button" class="btn btn-primary w-100" data-toggle="modal" data-target="#detailView-@(houseVM.House.Id)">
-                                View Details
-                            </button>
-                        </div>
-                    </div>
                     <div class="row align">
-                        <h3 class="text-primary px-4">@houseVM.House.Name</h3>
+                        <h3 class="text-primary text-center py-4 px-1">@houseVM.House.Name</h3>
                     </div>
-                    <div class="container px-2 d-flex justify-content-center align-items-center" style="height: 400px;">
+                    <div class="container px-3 d-flex justify-content-center align-items-center" style="">
 
-                        <img src="@houseVM.House.ImageUrl" class="img-fluid" style="max-width: 100%; max-height: 100%;" />
+                        <img src="@houseVM.House.ImageUrl" class="img-fluid" style="max-width: 100%; max-height: 400px;" />
 
                     </div>
-                    <div class="row p-3">
+                    <div class="row p-4">
                         <div class="col-12">
                             @if (houseVM.House.IsDiscountActivated == true)
                                 {
@@ -45,12 +38,7 @@
                             {
                                 @if (houseVM.House.IsBooked == false)
                                 {
-                                    <a asp-controller="Booking" asp-action="ProcessBooking"
-                                       asp-route-houseId="@houseVM.House.Id" asp-route-checkInDate="@Model.CheckInDate"
-                                       asp-route-nightsQty="@Model.NightsQty"
-                                       class="btn btn-primary w-100">
-                                        Book
-                                    </a>
+                                    <button type="button" onclick="ProcessBooking(@houseVM.House.Id)" class="btn btn-primary w-100">Book</button>
                                 }
                                 else
                                 {
@@ -60,6 +48,11 @@
                                 }
                             }
                         </div>
+                        <div class="col-12 col-xl-6">
+                            <button type="button" class="btn btn-primary w-100" data-toggle="modal" data-target="#detailView-@(houseVM.House.Id)">
+                                View Details
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -68,7 +61,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="viewDetailLabel">Details @houseVM.House.Name</h5>
+                            <h4 class="modal-title text-center p-2" id="viewDetailLabel"> @houseVM.House.Name</h4>
                             <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
                             </button>
                         </div>
@@ -76,10 +69,7 @@
                             <partial name="_HouseDetails" model="@Model.HouseVMList.FirstOrDefault(u=>u.House.Id==houseVM.House.Id)" />
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <a asp-controller="House" asp-action="Book" class="btn btn-primary">
-                                Book
-                            </a>
+                            <button type="button" onclick="ProcessBooking(@houseVM.House.Id)" class="btn btn-primary w-25">Book</button>
                         </div>
                     </div>
                 </div>

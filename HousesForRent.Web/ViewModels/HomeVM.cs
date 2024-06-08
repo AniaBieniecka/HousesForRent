@@ -14,6 +14,9 @@ namespace HousesForRent.Web.ViewModels
         public DateOnly? CheckOutDate { get; set; }
         [Display(Name = "Nights quantity")]
         public int NightsQty { get; set; }
+
+        [Display(Name = "People quantity")]
+        public int PeopleQty { get; set; }
         public IEnumerable<Amenity> AmenityList { get; set;}
     }
 }

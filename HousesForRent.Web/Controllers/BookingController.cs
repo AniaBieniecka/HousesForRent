@@ -40,20 +40,20 @@ namespace HousesForRent.Web.Controllers
         }
 
         [Authorize]
-        public IActionResult ProcessBooking(int houseId, int nightsQty, string checkInDate)
+        public IActionResult ProcessBooking(int houseId, int nightsQty, DateOnly checkInDate)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
             var user = _userManager.FindByIdAsync(userId).GetAwaiter().GetResult();
 
-            DateOnly.TryParseExact(checkInDate, "dd.MM.yyyy", null, System.Globalization.DateTimeStyles.None, out DateOnly checkInDateParsed);
+           // DateOnly.TryParseExact(checkInDate, "dd.MM.yyyy", null, System.Globalization.DateTimeStyles.None, out DateOnly checkInDateParsed);
 
             Booking booking = new()
             {
                 HouseId = houseId,
                 House = _houseService.GetHouse(houseId),
-                CheckInDate = checkInDateParsed,
-                CheckOutDate = checkInDateParsed.AddDays(nightsQty),
+                CheckInDate = checkInDate,
+                CheckOutDate = checkInDate.AddDays(nightsQty),
                 NightsQty = nightsQty,
                 UserId = userId,
                 UserName = user.Name,
@@ -73,7 +73,7 @@ namespace HousesForRent.Web.Controllers
                 }
             };
 
-            return View(bookingVM);
+             return View(bookingVM);
         }
 
         [Authorize]

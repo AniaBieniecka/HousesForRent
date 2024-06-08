@@ -15,5 +15,6 @@ namespace HousesForRent.Application.Services.Interface
         bool IsHouseBooked(int houseId, int nightsQty, DateOnly checkInDate);
         void UpdateStatus(int bookingId, string bookingStatus);
         void UpdateStripePaymentID(int bookingId, string sesstionId, string paymentIntentId);
+
     }
 }
