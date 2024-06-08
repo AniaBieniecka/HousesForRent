@@ -7,14 +7,14 @@
             <div class="col-lg-4">
                 <div class="card bg-light my-2 ">
                     <div class="row align">
-                        <h3 class="text-primary text-center pd-2 pt-4 px-1">@houseVM.House.Name</h3>
+                        <h3 class="text-primary text-center py-4 px-1">@houseVM.House.Name</h3>
                     </div>
-                    <div class="container px-2 d-flex justify-content-center align-items-center" style="height: 400px;">
+                    <div class="container px-3 d-flex justify-content-center align-items-center" style="">
 
-                        <img src="@houseVM.House.ImageUrl" class="img-fluid" style="max-width: 100%; max-height: 100%;" />
+                        <img src="@houseVM.House.ImageUrl" class="img-fluid" style="max-width: 100%; max-height: 400px;" />
 
                     </div>
-                    <div class="row p-3">
+                    <div class="row p-4">
                         <div class="col-12">
                             @if (houseVM.House.IsDiscountActivated == true)
                                 {
@@ -61,7 +61,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title text-center" id="viewDetailLabel"> @houseVM.House.Name</h4>
+                            <h4 class="modal-title text-center p-2" id="viewDetailLabel"> @houseVM.House.Name</h4>
                             <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
                             </button>
                         </div>
