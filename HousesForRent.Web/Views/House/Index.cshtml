@@ -10,14 +10,9 @@
             <tr>
                 <th>Name</th>
                 <th>Location</th>
-                <th>Area</th>
-                <th>Rooms</th>
-                <th>Single beds</th>
-                <th>Double beds</th>
-                <th>Price</th>
-                <th>Discount price</th>
-                <th>Max. occupancy</th>
-                <th>Description</th>
+                <th>Detailed information</th>
+                <th>Price per hotel night</th>
+                <th style="width:40%">Description</th>
                 <th></th>
             </tr>
         </thead>
@@ -28,13 +23,24 @@
                 <tr>
                     <td>@house.Name</td>
                     <td>@house.Location</td>
-                    <td>@house.Area</td>
-                    <td>@house.RoomsQuantity</td>
-                    <td>@house.SingleBedQuantity</td>
-                    <td>@house.DoubleBedQuantity</td>
-                    <td>@house.Price</td>
-                    <td>@house.DiscountPrice</td>
-                    <td>@house.Occupancy</td>
+                    <td>@house.Area m<sup>2</sup> house area<br/>
+                        @house.RoomsQuantity rooms<br />
+                        @house.SingleBedQuantity single beds<br />
+                        @house.DoubleBedQuantity double beds<br />
+                        @house.Occupancy max. occupancy<br />
+                    </td>
+
+                    <td>
+                        @if (house.IsDiscountActivated == true)
+                        {
+                            <s>@house.Price.ToString("c")</s>
+                            @house.DiscountPrice.ToString("c")
+                        }
+                        else
+                        {
+                            @house.Price.ToString("c")
+                        }
+                    </td>
                     <td>@house.Description</td>
                     <td>
                         <div class="d-flex flex-column">
