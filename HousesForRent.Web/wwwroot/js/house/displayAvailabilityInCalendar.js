@@ -19,7 +19,7 @@ $(document).ready(function () {
 
     });
 
-    var maxSelections = 6; //maksymalna liczba wyboru
+    var maxSelections = 8; //maksymalna liczba wyboru
     var $checkboxes = $('input[name="selectedHouses"]');
     $checkboxes.change(function () {
         var numChecked = $checkboxes.filter(':checked').length;
@@ -96,6 +96,8 @@ var resourceColors = {
     '4': '#FFA500',
     '5': '#9932CC',
     '6': '#FF69B4',
+    '7': '#BC544B',
+    '8': '#373737',
 };
 
 

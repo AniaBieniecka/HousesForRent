@@ -15,7 +15,8 @@
                 <label class="btn btn-outline-primary" for="btnradio4">@SD.StatusCompleted</label>
                 <input type="radio" class="btn-check" name="status" id="btnradio5" value="@SD.StatusCancelled" autocomplete="off" onchange="filterTable(this)">
                 <label class="btn btn-outline-primary" for="btnradio5">@SD.StatusCancelled</label>
-
+                <input type="radio" class="btn-check" name="status" id="btnradio6" value="" autocomplete="off" onchange="filterTable(this)">
+                <label class="btn btn-outline-primary" for="btnradio6">All</label>
             </div>
         </div>
         <table id="tblBookings" class="table table-bordered table-hover table-dark">
@@ -23,8 +24,8 @@
                 <tr>
                     <th style="width:5%">Id</th>
                     <th style="width:14%">House</th>
-                    <th style="width:16%">Name</th>
-                    <th style="width:9%">Phone</th>
+                    <th style="width:16%">Customer name</th>
+                    <th style="width:9%">Customer phone</th>
                     <th style="width:5%">Status</th>
                     <th style="width:10%">Check-in date</th>
                     <th style="width:5%">Nights</th>

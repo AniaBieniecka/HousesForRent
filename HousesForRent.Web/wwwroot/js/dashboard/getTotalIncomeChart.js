@@ -15,7 +15,7 @@ function loadTotalIncomeRadialChart() {
             document.querySelector("#spanTotalIncome").innerHTML = formatCurrency(data.totalCount);
 
             var sectionCurrentCount = document.createElement("strong");
-            document.querySelector("#sectionIncome").innerHTML += "This month bookings: ";
+            document.querySelector("#sectionIncome").innerHTML += "This month bookings: <br/>";
             document.querySelector("#sectionIncome").append(sectionCurrentCount);
             sectionCurrentCount.innerHTML = formatCurrency(data.countCurrentMonth) + ' </strong>';
 

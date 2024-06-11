@@ -166,6 +166,7 @@ namespace HousesForRent.Web.Controllers
         {
             var users = _userManager.Users.ToList();
             var userList = new List<UserVM>();
+            var bookings = _bookingService.GetAllBookings().ToList();
 
             foreach (var user in users)
             {
@@ -177,7 +178,8 @@ namespace HousesForRent.Web.Controllers
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
                     CreatedAt = user.CreatedAt,
-                    Roles = userRoles
+                    Roles = userRoles,
+                    BookingsQty = bookings.FindAll(u=>u.UserId ==  user.Id).Count(),
                 });
 
             }
