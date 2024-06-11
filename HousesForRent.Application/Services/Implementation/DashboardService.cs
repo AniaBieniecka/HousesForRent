@@ -53,7 +53,7 @@ namespace HousesForRent.Application.Services.Implementation
                 (user, booking) => new
                 {
                     user.DateTime,
-                    BookingCount = bookings.Select(x => x.BookingCount).FirstOrDefault(),
+                    BookingCount = booking.Select(x => x.BookingCount).FirstOrDefault(),
                     user.UserCount
 
                 });
