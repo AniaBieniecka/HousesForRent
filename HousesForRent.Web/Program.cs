@@ -6,6 +6,7 @@ using HousesForRent.Infrastructure.Data;
 using HousesForRent.Infrastructure.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,8 +14,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<ApplicationDbContext>(option =>
-option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+options.UseSqlServer(Environment.GetEnvironmentVariable("DefaultConnection")));
+
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IAmenityService, AmenityService>();
@@ -32,7 +36,9 @@ builder.Services.Configure<IdentityOptions>(option =>
 
 var app = builder.Build();
 
-StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+StripeConfiguration.ApiKey =
+    //builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+    Environment.GetEnvironmentVariable("StripeSecretKey");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
