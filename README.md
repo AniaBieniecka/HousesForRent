@@ -2,7 +2,7 @@
 Project House for rent is an apllication that allows booking holiday homes and also houses and booking management for the admin user. 
 Admin user also has a view in the dashboard for booking statistics and a view of bookings in the calendar. He can also manage amenties and change booking statuses.
 
-[Link to the application](https://houseforrent.hostingasp.pl/).
+[Link to the application](https://houseforrent.hostingasp.pl/)
 
 ## During building application  I used:
 ASP NET MVC Core 8.0, 
