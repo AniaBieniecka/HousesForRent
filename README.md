@@ -1,24 +1,22 @@
 # Description
-Project House for rent is an apllication that allows booking holiday homes and also houses and booking management for the admin user. 
+Project House for rent is an apllication that allows booking holiday homes and also managing bookings, houses and users for the admin user. 
 Admin user also has a view in the dashboard for booking statistics and a view of bookings in the calendar. He can also manage amenties and change booking statuses.
 
 [Link to the application](https://houseforrent.hostingasp.pl/)
 
 ## During building application  I used:
-ASP NET MVC Core 8.0, 
-Entity Framework, 
-Identity Framework, 
-Bootstrap,
-jQuery (e.g. calendar view and navigation, displaying charts)
-ApexCharts
+ASP NET MVC Core 8.0, <br>
+Entity Framework, <br>
+Identity Framework, <br>
+Bootstrap, <br>
+jQuery (e.g. calendar view and navigation, displaying charts), <br>
+ApexCharts, <br>
 Stripe Payment 
 
 ## Usefull information for testing:
 
 Login data for testing are available on the Login page
-
-When testing booking payment use Stripe testing data:
-
+When testing booking payment use Stripe testing data and instruction below:
 1. Fill out the payment details with the test card information:
 2. Enter 4242 4242 4242 4242 as the card number.
 3. Enter any future date for card expiry.
